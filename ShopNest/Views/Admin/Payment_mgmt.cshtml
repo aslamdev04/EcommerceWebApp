@@ -1,0 +1,51 @@
+﻿
+@{
+    ViewData["Title"] = "Payment_mgmt";
+    Layout = "~/Views/Shared/_Admin.cshtml";
+}
+<div class="cnt page-anim">
+
+    <div class="zpill adm"><i class="fa-solid fa-shield-halved"></i> Admin Zone</div>
+    <div class="ph">
+        <div><h1>Payment Management</h1><p>Monitor transactions, refunds and payment status.</p></div>
+        <div class="ph-acts"><button class="btn-sn btn-o"><i class="fa-solid fa-download"></i> Export</button></div>
+    </div>
+    <div class="sg mb-18" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
+        <div class="sc gr"><div class="sc-top"><div class="sc-ico gr"><i class="fa-solid fa-circle-check"></i></div><div class="sc-tr up"><i class="fa-solid fa-arrow-trend-up"></i>+22%</div></div><div class="sc-val">₹84.2K</div><div class="sc-lbl">Total Revenue</div></div>
+        <div class="sc am"><div class="sc-top"><div class="sc-ico am"><i class="fa-solid fa-hourglass-half"></i></div></div><div class="sc-val">₹4.2K</div><div class="sc-lbl">Pending Payments</div></div>
+        <div class="sc ro"><div class="sc-top"><div class="sc-ico ro"><i class="fa-solid fa-rotate-left"></i></div></div><div class="sc-val">₹1.8K</div><div class="sc-lbl">Total Refunds</div></div>
+        <div class="sc cy"><div class="sc-top"><div class="sc-ico cy"><i class="fa-solid fa-shield-halved"></i></div></div><div class="sc-val">12</div><div class="sc-lbl">Disputes</div></div>
+    </div>
+    <div class="g2">
+        <div class="card-sn">
+            <div class="ch"><h3><i class="fa-solid fa-chart-pie"></i> Payment Methods</h3></div>
+            <div class="cb">
+                <div class="dnut-wrap" style="justify-content:center">
+                    <div class="dnut" style="background:conic-gradient(var(--blue) 0deg 130deg,var(--emerald) 130deg 210deg,var(--amber) 210deg 280deg,var(--violet) 280deg 360deg)"><div class="dnut-c"><strong>100%</strong><span>Split</span></div></div>
+                    <div class="dleg">
+                        <div class="dleg-i"><div class="dleg-dot" style="background:var(--blue)"></div>UPI<span class="dleg-val">36%</span></div>
+                        <div class="dleg-i"><div class="dleg-dot" style="background:var(--emerald)"></div>Credit Card<span class="dleg-val">22%</span></div>
+                        <div class="dleg-i"><div class="dleg-dot" style="background:var(--amber)"></div>Debit Card<span class="dleg-val">19%</span></div>
+                        <div class="dleg-i"><div class="dleg-dot" style="background:var(--violet)"></div>Net Banking<span class="dleg-val">14%</span></div>
+                        <div class="dleg-i"><div class="dleg-dot" style="background:var(--t3)"></div>COD<span class="dleg-val">9%</span></div>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="card-sn">
+            <div class="ch"><h3><i class="fa-solid fa-list"></i> Recent Transactions</h3></div>
+            <div class="table-responsive">
+                <table class="dt">
+                    <thead><tr><th>Txn ID</th><th>Customer</th><th>Amount</th><th>Method</th><th>Status</th></tr></thead>
+                    <tbody>
+                        <tr><td style="font-family:var(--mono);font-size:11px;color:var(--t3)">#TXN-5892</td><td>Priya Sharma</td><td><span style="font-family:var(--mono);font-weight:700">₹18,450</span></td><td>UPI</td><td><span class="bdg bdg-paid">Paid</span></td></tr>
+                        <tr><td style="font-family:var(--mono);font-size:11px;color:var(--t3)">#TXN-5891</td><td>Arjun Kumar</td><td><span style="font-family:var(--mono);font-weight:700">₹1,29,900</span></td><td>Credit Card</td><td><span class="bdg bdg-paid">Paid</span></td></tr>
+                        <tr><td style="font-family:var(--mono);font-size:11px;color:var(--t3)">#TXN-5888</td><td>Sanjay Rao</td><td><span style="font-family:var(--mono);font-weight:700">₹3,100</span></td><td>Debit Card</td><td><span class="bdg bdg-refund">Refunded</span></td></tr>
+                        <tr><td style="font-family:var(--mono);font-size:11px;color:var(--t3)">#TXN-5885</td><td>Nisha Patel</td><td><span style="font-family:var(--mono);font-weight:700">₹42,000</span></td><td>Net Banking</td><td><span class="bdg bdg-pending">Pending</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+

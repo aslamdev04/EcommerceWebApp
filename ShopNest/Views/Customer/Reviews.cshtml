@@ -1,0 +1,33 @@
+﻿
+@{
+    ViewData["Title"] = "Reviews";
+    Layout = "~/Views/Shared/_Customer.cshtml";
+}
+
+<div class="cnt page-anim">
+
+    <div class="zpill cus"><i class="fa-solid fa-user-circle"></i> Customer Zone</div>
+    <div class="ph"><div><h1>Reviews &amp; Feedback</h1><p>Rate your purchased products and help other buyers.</p></div></div>
+    <div class="g2">
+        <div class="card-sn">
+            <div class="ch"><h3><i class="fa-solid fa-pen-to-square"></i> Write a Review</h3></div>
+            <div class="cb d-flex flex-column gap-3">
+                <div><label class="flbl">Product</label><select class="tsel w-100"><option>iPhone 15 Pro Max</option><option>Nike Air Max 270</option><option>Apple Watch Series 9</option></select></div>
+                <div><label class="flbl">Your Rating</label><div class="d-flex gap-1" style="font-size:26px;cursor:pointer"><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star">★</span><span class="star empty">★</span></div></div>
+                <div><label class="flbl">Review Title</label><input type="text" class="finp" placeholder="Summarize your experience…" /></div>
+                <div><label class="flbl">Detailed Review</label><textarea rows="4" class="finp" style="resize:vertical" placeholder="Tell others what you think about the product…"></textarea></div>
+                <div><label class="flbl">Upload Photos (optional)</label><div style="border:2px dashed var(--bdr);border-radius:9px;padding:20px;text-align:center;cursor:pointer;background:var(--srf2)"><i class="fa-solid fa-cloud-arrow-up" style="font-size:22px;color:var(--t3)"></i><div style="font-size:12.5px;color:var(--t3);margin-top:6px">Drag &amp; drop or click to upload</div></div></div>
+                <button class="btn-sn btn-p justify-content-center"><i class="fa-solid fa-star"></i> Submit Review</button>
+            </div>
+        </div>
+        <div class="card-sn">
+            <div class="ch"><h3><i class="fa-solid fa-star"></i> My Reviews</h3><span class="bdg bdg-active">8 Reviews</span></div>
+            <div class="cb">
+                <div class="rev-i"><div class="rev-head"><div class="rev-av">PS</div><div><div class="rev-name">Nike Air Max 270</div><div><span class="star">★★★★★</span></div></div><div class="rev-date">Mar 10, 2026</div></div><div class="rev-txt">Super comfortable and stylish! The cushioning is amazing for all-day wear. Delivered in perfect condition.</div></div>
+                <div class="rev-i"><div class="rev-head"><div class="rev-av">PS</div><div><div class="rev-name">Apple Watch Series 9</div><div><span class="star">★★★★</span><span class="star empty">★</span></div></div><div class="rev-date">Feb 22, 2026</div></div><div class="rev-txt">Great smartwatch with excellent battery life. Health tracking features are very accurate.</div></div>
+                <div class="rev-i"><div class="rev-head"><div class="rev-av">PS</div><div><div class="rev-name">L-Shape Sofa Set</div><div><span class="star">★★★★★</span></div></div><div class="rev-date">Jan 15, 2026</div></div><div class="rev-txt">Absolutely love this sofa! Premium quality fabric, easy to assemble, and looks stunning in the living room.</div></div>
+            </div>
+        </div>
+    </div>
+</div>
+

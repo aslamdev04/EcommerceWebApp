@@ -1,0 +1,39 @@
+﻿
+@{
+    ViewData["Title"] = "user_mgmt";
+    Layout = "~/Views/Shared/_Admin.cshtml";
+}
+
+<div class="cnt page-anim">
+
+    <div class="zpill adm"><i class="fa-solid fa-shield-halved"></i> Admin Zone</div>
+    <div class="ph">
+        <div><h1>User Management</h1><p>View, activate, deactivate and manage all customer accounts.</p></div>
+        <div class="ph-acts">
+            <button class="btn-sn btn-o"><i class="fa-solid fa-download"></i> Export CSV</button>
+            <button class="btn-sn btn-p"><i class="fa-solid fa-user-plus"></i> Add User</button>
+        </div>
+    </div>
+    <div class="card-sn">
+        <div class="tf">
+            <div class="ts"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Search users…" /></div>
+            <select class="tsel"><option>All Roles</option><option>Customer</option><option>Admin</option></select>
+            <select class="tsel"><option>All Status</option><option>Active</option><option>Inactive</option><option>Banned</option></select>
+            <button class="btn-sn btn-o btn-sm"><i class="fa-solid fa-filter"></i> Filter</button>
+        </div>
+        <div class="table-responsive">
+            <table class="dt">
+                <thead><tr><th><input type="checkbox" /></th><th>Customer</th><th>Phone</th><th>Location</th><th>Joined</th><th>Orders</th><th>Spent</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody>
+                    <tr><td><input type="checkbox" /></td><td><div class="cc"><div class="cav" style="background:var(--blue-l);color:var(--blue)">PS</div><div><div class="cn">Priya Sharma</div><div class="ce">priya@gmail.com</div></div></div></td><td>98765 43210</td><td>Mumbai, MH</td><td>Mar 12, 2026</td><td><span style="font-family:var(--mono);font-weight:700">14</span></td><td><span style="font-family:var(--mono);font-weight:700">₹28,400</span></td><td><span class="bdg bdg-active">Active</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-ban"></i></button></div></td></tr>
+                    <tr><td><input type="checkbox" /></td><td><div class="cc"><div class="cav" style="background:#d1fae5;color:var(--emerald)">AK</div><div><div class="cn">Arjun Kumar</div><div class="ce">arjun@gmail.com</div></div></div></td><td>97812 34567</td><td>Delhi, DL</td><td>Feb 5, 2026</td><td><span style="font-family:var(--mono);font-weight:700">8</span></td><td><span style="font-family:var(--mono);font-weight:700">₹16,200</span></td><td><span class="bdg bdg-active">Active</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-ban"></i></button></div></td></tr>
+                    <tr><td><input type="checkbox" /></td><td><div class="cc"><div class="cav" style="background:#fef3c7;color:var(--amber)">RM</div><div><div class="cn">Riya Menon</div><div class="ce">riya@gmail.com</div></div></div></td><td>96543 21098</td><td>Bangalore, KA</td><td>Jan 18, 2026</td><td><span style="font-family:var(--mono);font-weight:700">21</span></td><td><span style="font-family:var(--mono);font-weight:700">₹52,800</span></td><td><span class="bdg bdg-active">Active</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-ban"></i></button></div></td></tr>
+                    <tr><td><input type="checkbox" /></td><td><div class="cc"><div class="cav" style="background:#ffe4e6;color:var(--rose)">SR</div><div><div class="cn">Sanjay Rao</div><div class="ce">sanjay@gmail.com</div></div></div></td><td>95001 87654</td><td>Chennai, TN</td><td>Dec 2, 2025</td><td><span style="font-family:var(--mono);font-weight:700">3</span></td><td><span style="font-family:var(--mono);font-weight:700">₹4,100</span></td><td><span class="bdg bdg-inactive">Inactive</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-ban"></i></button></div></td></tr>
+                    <tr><td><input type="checkbox" /></td><td><div class="cc"><div class="cav" style="background:#ede9fe;color:var(--violet)">NP</div><div><div class="cn">Nisha Patel</div><div class="ce">nisha@gmail.com</div></div></div></td><td>94321 56789</td><td>Pune, MH</td><td>Nov 14, 2025</td><td><span style="font-family:var(--mono);font-weight:700">6</span></td><td><span style="font-family:var(--mono);font-weight:700">₹9,800</span></td><td><span class="bdg bdg-cancelled">Banned</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-ban"></i></button></div></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="pgn"><div class="pgn-info">Showing 1–5 of 1,248 users</div><div class="pgn-btns"><button class="pb"><i class="fa-solid fa-chevron-left"></i></button><button class="pb on">1</button><button class="pb">2</button><button class="pb">3</button><button class="pb">…</button><button class="pb">250</button><button class="pb"><i class="fa-solid fa-chevron-right"></i></button></div></div>
+    </div>
+</div>
+

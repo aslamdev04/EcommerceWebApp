@@ -1,0 +1,81 @@
+﻿<!DOCTYPE html>
+
+<html>
+<head>
+    <meta name="viewport" content="width=device-width" />
+    <title>@ViewBag.Title</title>
+    <link rel="stylesheet" href="~/lib/bootstrap/dist/css/bootstrap.min.css" />
+    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.0/css/all.min.css" />
+ 
+    <link rel="stylesheet" href="~/css/Customer.css" asp-append-version="true" />
+</head>
+<body>
+    <div class="overlay" id="ov" onclick="document.getElementById('sb').classList.remove('open');this.classList.remove('show')"></div>
+    <aside class="sb" id="sb">
+        <div class="sb-logo">
+            <div class="sb-logo-mark"><i class="fa-solid fa-basket-shopping"></i></div>
+            <div class="sb-logo-text"><strong>ShopNest</strong><span>E-Commerce Portal</span></div>
+        </div>
+        <div class="sb-zone">
+            <span class="sb-zone-lbl">Portal Zone</span>
+            <div class="sb-zone-row">
+                <a asp-controller ="Admin" asp-action="Index" class="zb" style="text-decoration:none">Admin</a>
+                <a asp-controller="Customer" asp-action="Index" class="zb on" style="text-decoration:none">Customer</a>
+                <a asp-controller="Home" asp-action="Index" class="zb" style="text-decoration:none">General</a>
+            </div>
+        </div>
+        <nav class="sb-nav">
+            <div class="sb-sec">
+                <div class="sb-sec-t">Overview</div><a asp-controller="Customer" asp-action="Index" class="sb-item on"><span class="si"><i class="fa-solid fa-gauge-high"></i></span>My Dashboard</a>
+            </div><div class="sb-sec">
+                <div class="sb-sec-t">Shopping</div><a asp-controller="Customer" asp-action="MyOrders" class="sb-item"><span class="si"><i class="fa-solid fa-shop"></i></span>Browse Products</a>
+                <a asp-controller="Customer" asp-action="Cart" class="sb-item"><span class="si"><i class="fa-solid fa-cart-shopping"></i></span>My Cart<span class="sb-bdg r">4</span></a>
+                <a asp-controller="Customer" asp-action="Checkout" class="sb-item"><span class="si"><i class="fa-solid fa-bag-shopping"></i></span>Checkout</a>
+                <a asp-controller="Customer" asp-action="Payment" class="sb-item"><span class="si"><i class="fa-solid fa-credit-card"></i></span>Payment</a>
+            </div><div class="sb-sec">
+                <div class="sb-sec-t">Orders</div><a asp-controller="Customer" asp-action="MyOrders" class="sb-item"><span class="si"><i class="fa-solid fa-box-archive"></i></span>My Orders</a>
+                <a asp-controller="Customer" asp-action="Order_track" class="sb-item"><span class="si"><i class="fa-solid fa-route"></i></span>Track Order</a>
+                <a asp-controller="Customer" asp-action="Reviews" class="sb-item"><span class="si"><i class="fa-solid fa-star"></i></span>Reviews & Feedback</a>
+            </div><div class="sb-sec">
+                <div class="sb-sec-t">Account</div><a asp-controller="Customer" asp-action="Profile" class="sb-item"><span class="si"><i class="fa-solid fa-user-circle"></i></span>My Profile</a>
+                <a asp-controller ="Customer" asp-action="Notifications" class="sb-item"><span class="si"><i class="fa-solid fa-bell"></i></span>Notifications<span class="sb-bdg a">5</span></a>
+            </div>
+        </nav>
+        <div class="sb-foot">
+            <div class="sb-usr">
+                <div class="sb-av">PS</div>
+                <div><div class="sb-uname">Priya Sharma</div><div class="sb-urole">Customer</div></div>
+                <i class="fa-solid fa-ellipsis-vertical" style="color:rgba(255,255,255,.25);font-size:12px;margin-left:auto"></i>
+            </div>
+        </div>
+    </aside>
+    <div class="main">
+        <header class="hdr">
+            <div class="hdr-ham" onclick="document.getElementById('sb').classList.toggle('open');document.getElementById('ov').classList.toggle('show')">
+                <span></span><span></span><span></span>
+            </div>
+            <div class="hdr-crumb">
+                <span>ShopNest</span>
+                <i class="fa-solid fa-chevron-right" style="font-size:9px"></i>
+                <span class="cp">My Dashboard</span>
+            </div>
+            <div class="hdr-srch"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Search products, orders, users…" /></div>
+            <div class="hdr-acts">
+                <div class="hdr-btn"><i class="fa-solid fa-bell"></i><span class="ndot"></span></div>
+                <div class="hdr-btn"><i class="fa-solid fa-cart-shopping"></i></div>
+                <div class="hdr-btn"><i class="fa-solid fa-gear"></i></div>
+                <div class="hdr-prof"><div class="hdr-pav">SA</div><div><div class="hdr-pname">Admin</div></div><i class="fa-solid fa-chevron-down" style="font-size:10px;color:var(--t3)"></i></div>
+            </div>
+        </header>
+        <div role="main">
+            @RenderBody()
+        </div>
+    </div>
+
+
+
+    <script src="~/lib/jquery/dist/jquery.min.js"></script>
+    <script src="~/lib/bootstrap/dist/js/bootstrap.bundle.min.js"></script>
+    <script src="~/js/site.js" asp-append-version="true"></script>
+</body>
+</html>

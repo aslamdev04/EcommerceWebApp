@@ -1,0 +1,43 @@
+﻿
+@{
+    ViewData["Title"] = "Offer_noti";
+    Layout = "~/Views/Shared/_Admin.cshtml";
+}
+
+<div class="cnt page-anim">
+
+    <div class="zpill adm"><i class="fa-solid fa-shield-halved"></i> Admin Zone</div>
+    <div class="ph">
+        <div><h1>Offers &amp; Notifications</h1><p>Create promotional offers and send announcements.</p></div>
+        <div class="ph-acts"><button class="btn-sn btn-p"><i class="fa-solid fa-plus"></i> New Offer</button></div>
+    </div>
+    <div class="g2">
+        <div class="card-sn">
+            <div class="ch"><h3><i class="fa-solid fa-tag"></i> Active Offers</h3></div>
+            <div class="table-responsive">
+                <table class="dt">
+                    <thead><tr><th>Code</th><th>Discount</th><th>Valid Till</th><th>Uses</th><th>Status</th><th>Action</th></tr></thead>
+                    <tbody>
+                        <tr><td><span style="font-family:var(--mono);font-weight:700;color:var(--blue)">SUMMER25</span></td><td>25% OFF</td><td>Apr 30, 2026</td><td>284 / 1000</td><td><span class="bdg bdg-active">Active</span></td><td><div class="abtns"><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-trash"></i></button></div></td></tr>
+                        <tr><td><span style="font-family:var(--mono);font-weight:700;color:var(--blue)">FIRST500</span></td><td>₹500 OFF</td><td>Dec 31, 2026</td><td>1,204 / ∞</td><td><span class="bdg bdg-active">Active</span></td><td><div class="abtns"><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-trash"></i></button></div></td></tr>
+                        <tr><td><span style="font-family:var(--mono);font-weight:700;color:var(--t3)">HOLI2026</span></td><td>30% OFF</td><td>Mar 15, 2026</td><td>892 / 500</td><td><span class="bdg bdg-inactive">Expired</span></td><td><div class="abtns"><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-trash"></i></button></div></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-sn">
+            <div class="ch"><h3><i class="fa-solid fa-bullhorn"></i> Send Notification</h3></div>
+            <div class="cb d-flex flex-column gap-3">
+                <div><label class="flbl">Target Audience</label><select class="tsel w-100"><option>All Users</option><option>New Users</option><option>Premium Users</option></select></div>
+                <div><label class="flbl">Notification Type</label><select class="tsel w-100"><option>Promotional Offer</option><option>Order Update</option><option>Product Restock</option><option>System Alert</option></select></div>
+                <div><label class="flbl">Title</label><input type="text" class="finp" placeholder="Notification title…" /></div>
+                <div><label class="flbl">Message</label><textarea rows="3" class="finp" style="resize:vertical" placeholder="Write your message…"></textarea></div>
+                <div class="d-flex gap-2">
+                    <button class="btn-sn btn-p flex-fill justify-content-center"><i class="fa-solid fa-paper-plane"></i> Send Now</button>
+                    <button class="btn-sn btn-o flex-fill justify-content-center"><i class="fa-solid fa-clock"></i> Schedule</button>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>
+

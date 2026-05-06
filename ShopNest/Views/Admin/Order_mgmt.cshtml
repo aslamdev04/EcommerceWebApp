@@ -1,0 +1,49 @@
+﻿
+@{
+    ViewData["Title"] = "Order_mgmt";
+    Layout = "~/Views/Shared/_Admin.cshtml";
+}
+
+<div class="cnt page-anim">
+
+    <div class="zpill adm"><i class="fa-solid fa-shield-halved"></i> Admin Zone</div>
+    <div class="ph">
+        <div><h1>Order Management</h1><p>Manage all customer orders and update their statuses.</p></div>
+        <div class="ph-acts"><button class="btn-sn btn-o"><i class="fa-solid fa-download"></i> Export</button></div>
+    </div>
+    <div class="sg mb-18" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+        <div class="sc am"><div class="sc-top"><div class="sc-ico am"><i class="fa-solid fa-hourglass-half"></i></div></div><div class="sc-val">34</div><div class="sc-lbl">Pending</div></div>
+        <div class="sc bl"><div class="sc-top"><div class="sc-ico bl"><i class="fa-solid fa-gear"></i></div></div><div class="sc-val">212</div><div class="sc-lbl">Processing</div></div>
+        <div class="sc cy"><div class="sc-top"><div class="sc-ico cy"><i class="fa-solid fa-truck"></i></div></div><div class="sc-val">841</div><div class="sc-lbl">Shipped</div></div>
+        <div class="sc gr"><div class="sc-top"><div class="sc-ico gr"><i class="fa-solid fa-circle-check"></i></div></div><div class="sc-val">8,083</div><div class="sc-lbl">Delivered</div></div>
+        <div class="sc ro"><div class="sc-top"><div class="sc-ico ro"><i class="fa-solid fa-ban"></i></div></div><div class="sc-val">471</div><div class="sc-lbl">Cancelled</div></div>
+    </div>
+    <div class="card-sn">
+        <div class="tabr">
+            <button class="tabb on">All Orders</button>
+            <button class="tabb">Pending (34)</button>
+            <button class="tabb">Processing (212)</button>
+            <button class="tabb">Shipped (841)</button>
+            <button class="tabb">Delivered</button>
+            <button class="tabb">Cancelled</button>
+        </div>
+        <div class="tf">
+            <div class="ts"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Search by order ID, customer…" /></div>
+            <select class="tsel"><option>All Dates</option><option>Today</option><option>This Week</option><option>This Month</option></select>
+        </div>
+        <div class="table-responsive">
+            <table class="dt">
+                <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead>
+                <tbody>
+                    <tr><td style="font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:700">#ORD-8821</td><td><div class="cc"><div class="cav" style="background:var(--blue-l);color:var(--blue)">PS</div><div><div class="cn">Priya Sharma</div></div></div></td><td>3 items</td><td><span style="font-family:var(--mono);font-weight:700">₹18,450</span></td><td>Mar 16, 2026</td><td><span class="bdg bdg-paid">Paid</span></td><td><span class="bdg bdg-delivered">Delivered</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button></div></td></tr>
+                    <tr><td style="font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:700">#ORD-8820</td><td><div class="cc"><div class="cav" style="background:#d1fae5;color:var(--emerald)">AK</div><div><div class="cn">Arjun Kumar</div></div></div></td><td>1 item</td><td><span style="font-family:var(--mono);font-weight:700">₹1,29,900</span></td><td>Mar 15, 2026</td><td><span class="bdg bdg-paid">Paid</span></td><td><span class="bdg bdg-shipped">Shipped</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button></div></td></tr>
+                    <tr><td style="font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:700">#ORD-8814</td><td><div class="cc"><div class="cav" style="background:#fef3c7;color:var(--amber)">RM</div><div><div class="cn">Riya Menon</div></div></div></td><td>5 items</td><td><span style="font-family:var(--mono);font-weight:700">₹7,230</span></td><td>Mar 14, 2026</td><td><span class="bdg bdg-paid">Paid</span></td><td><span class="bdg bdg-processing">Processing</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button></div></td></tr>
+                    <tr><td style="font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:700">#ORD-8809</td><td><div class="cc"><div class="cav" style="background:#ffe4e6;color:var(--rose)">SR</div><div><div class="cn">Sanjay Rao</div></div></div></td><td>2 items</td><td><span style="font-family:var(--mono);font-weight:700">₹3,100</span></td><td>Mar 13, 2026</td><td><span class="bdg bdg-refund">Refunded</span></td><td><span class="bdg bdg-cancelled">Cancelled</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button></div></td></tr>
+                    <tr><td style="font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:700">#ORD-8801</td><td><div class="cc"><div class="cav" style="background:#ede9fe;color:var(--violet)">NP</div><div><div class="cn">Nisha Patel</div></div></div></td><td>1 item</td><td><span style="font-family:var(--mono);font-weight:700">₹42,000</span></td><td>Mar 12, 2026</td><td><span class="bdg bdg-paid">Paid</span></td><td><span class="bdg bdg-pending">Pending</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button></div></td></tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="pgn"><div class="pgn-info">Showing 1–5 of 9,641 orders</div><div class="pgn-btns"><button class="pb on">1</button><button class="pb">2</button><button class="pb">3</button><button class="pb"><i class="fa-solid fa-chevron-right"></i></button></div></div>
+    </div>
+</div>
+

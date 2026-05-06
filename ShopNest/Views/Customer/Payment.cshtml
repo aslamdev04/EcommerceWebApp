@@ -1,0 +1,46 @@
+﻿
+@{
+    ViewData["Title"] = "Payment";
+    Layout = "~/Views/Shared/_Customer.cshtml";
+}
+
+<div class="cnt page-anim">
+
+    <div class="zpill cus"><i class="fa-solid fa-user-circle"></i> Customer Zone</div>
+    <div class="ph"><div><h1>Payment</h1><p>Choose your preferred payment method to complete your order.</p></div></div>
+    <div class="g3r">
+        <div class="card-sn">
+            <div class="ch"><h3><i class="fa-solid fa-credit-card"></i> Payment Methods</h3></div>
+            <div class="cb d-flex flex-column gap-3">
+                <div style="border:2px solid var(--blue);border-radius:10px;padding:14px;background:var(--blue-l)">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <input type="radio" name="pay" checked />
+                        <div style="font-size:13.5px;font-weight:700">UPI Payment</div>
+                        <div class="ms-auto d-flex gap-1">
+                            <span style="font-size:10px;background:#fff;border:1px solid var(--bdr);padding:2px 6px;border-radius:4px;font-weight:700;color:var(--t2)">GPay</span>
+                            <span style="font-size:10px;background:#fff;border:1px solid var(--bdr);padding:2px 6px;border-radius:4px;font-weight:700;color:var(--t2)">PhonePe</span>
+                            <span style="font-size:10px;background:#fff;border:1px solid var(--bdr);padding:2px 6px;border-radius:4px;font-weight:700;color:var(--t2)">Paytm</span>
+                        </div>
+                    </div>
+                    <input type="text" class="finp" placeholder="Enter UPI ID (e.g. yourname@upi)" />
+                </div>
+                <div style="border:1.5px solid var(--bdr);border-radius:10px;padding:14px">
+                    <div class="d-flex align-items-center gap-2 mb-2"><input type="radio" name="pay" /><div style="font-size:13.5px;font-weight:700">Credit / Debit Card</div></div>
+                    <div class="fgrp"><label class="flbl">Card Number</label><input type="text" class="finp" placeholder="0000 0000 0000 0000" /></div>
+                    <div class="row g-2"><div class="col-6"><label class="flbl">Expiry</label><input type="text" class="finp" placeholder="MM / YY" /></div><div class="col-6"><label class="flbl">CVV</label><input type="text" class="finp" placeholder="•••" /></div></div>
+                </div>
+                <div style="border:1.5px solid var(--bdr);border-radius:10px;padding:14px"><div class="d-flex align-items-center gap-2"><input type="radio" name="pay" /><div style="font-size:13.5px;font-weight:700">Net Banking</div></div></div>
+                <div style="border:1.5px solid var(--bdr);border-radius:10px;padding:14px"><div class="d-flex align-items-center gap-2 justify-content-between"><div class="d-flex align-items-center gap-2"><input type="radio" name="pay" /><div style="font-size:13.5px;font-weight:700">Cash on Delivery</div></div><span class="bdg" style="background:#fef3c7;color:#92400e">+₹50 COD fee</span></div></div>
+            </div>
+        </div>
+        <div class="card-sn">
+            <div class="ch"><h3><i class="fa-solid fa-lock"></i> Secure Payment</h3></div>
+            <div class="cb">
+                <div class="order-sum"><div class="os-row"><span>Amount to Pay</span><span style="font-size:18px;font-weight:800;color:var(--blue)">₹1,70,587</span></div></div>
+                <div class="d-flex align-items-center gap-2 my-3 p-3" style="background:#d1fae5;border-radius:8px"><i class="fa-solid fa-shield-halved" style="color:var(--emerald)"></i><div style="font-size:12px;color:#064e3b">256-bit SSL encrypted. Your payment information is 100% secure.</div></div>
+                <button class="btn-sn btn-p w-100 justify-content-center" style="padding:13px;font-size:14px"><i class="fa-solid fa-lock"></i> Pay ₹1,70,587 Securely</button>
+            </div>
+        </div>
+    </div>
+</div>
+

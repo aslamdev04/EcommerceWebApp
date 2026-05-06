@@ -1,0 +1,59 @@
+﻿
+@{
+    ViewData["Title"] = "Index";
+    Layout = "~/Views/Shared/_Customer.cshtml";
+}
+
+<div class="cnt page-anim">
+
+    <div class="zpill cus"><i class="fa-solid fa-user-circle"></i> Customer Zone</div>
+    <div class="ph">
+        <div><h1>My Dashboard</h1><p>Track your orders, wishlist, and account activity.</p></div>
+        <div class="ph-acts"><a href="browse.html" class="btn-sn btn-p"><i class="fa-solid fa-shop"></i> Shop Now</a></div>
+    </div>
+    <div style="background:linear-gradient(135deg,var(--ink),var(--ink2),#1e3a5f);border-radius:var(--r);padding:28px;color:#fff;margin-bottom:22px;display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:14px;position:relative;overflow:hidden">
+        <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(37,99,235,.2)"></div>
+        <div>
+            <div style="font-size:11px;font-weight:700;letter-spacing:.6px;text-transform:uppercase;opacity:.6;margin-bottom:6px">Welcome Back</div>
+            <div style="font-size:20px;font-weight:800">Hello, Priya Sharma! 👋</div>
+            <div style="font-size:13px;opacity:.7;margin-top:4px">You have 2 orders in transit and 5 new offers waiting.</div>
+        </div>
+        <div class="d-flex gap-4 flex-wrap">
+            <div style="text-align:center"><div style="font-size:26px;font-weight:800;font-family:var(--mono)">14</div><div style="font-size:11px;opacity:.6;text-transform:uppercase;letter-spacing:.5px">Orders</div></div>
+            <div style="text-align:center"><div style="font-size:26px;font-weight:800;font-family:var(--mono)">₹28K</div><div style="font-size:11px;opacity:.6;text-transform:uppercase;letter-spacing:.5px">Spent</div></div>
+            <div style="text-align:center"><div style="font-size:26px;font-weight:800;font-family:var(--mono)">8</div><div style="font-size:11px;opacity:.6;text-transform:uppercase;letter-spacing:.5px">Reviews</div></div>
+        </div>
+    </div>
+    <div class="sg mb-18" style="grid-template-columns:repeat(auto-fit,minmax(170px,1fr))">
+        <div class="sc am"><div class="sc-top"><div class="sc-ico am"><i class="fa-solid fa-hourglass-half"></i></div></div><div class="sc-val">1</div><div class="sc-lbl">Pending</div></div>
+        <div class="sc bl"><div class="sc-top"><div class="sc-ico bl"><i class="fa-solid fa-gear"></i></div></div><div class="sc-val">1</div><div class="sc-lbl">Processing</div></div>
+        <div class="sc cy"><div class="sc-top"><div class="sc-ico cy"><i class="fa-solid fa-truck"></i></div></div><div class="sc-val">2</div><div class="sc-lbl">In Transit</div></div>
+        <div class="sc gr"><div class="sc-top"><div class="sc-ico gr"><i class="fa-solid fa-circle-check"></i></div></div><div class="sc-val">10</div><div class="sc-lbl">Delivered</div></div>
+        <div class="sc ro"><div class="sc-top"><div class="sc-ico ro"><i class="fa-solid fa-heart"></i></div></div><div class="sc-val">24</div><div class="sc-lbl">Wishlist</div></div>
+    </div>
+    <div class="g2">
+        <div class="card-sn">
+            <div class="ch"><h3><i class="fa-solid fa-box-archive"></i> Recent Orders</h3><a href="my-orders.html" class="btn-sn btn-o btn-sm">View All</a></div>
+            <div class="table-responsive">
+                <table class="dt">
+                    <thead><tr><th>Order ID</th><th>Items</th><th>Amount</th><th>Status</th></tr></thead>
+                    <tbody>
+                        <tr><td style="font-family:var(--mono);color:var(--blue);font-weight:700">#ORD-8821</td><td>3 items</td><td><span style="font-family:var(--mono);font-weight:700">₹18,450</span></td><td><span class="bdg bdg-delivered">Delivered</span></td></tr>
+                        <tr><td style="font-family:var(--mono);color:var(--blue);font-weight:700">#ORD-8814</td><td>5 items</td><td><span style="font-family:var(--mono);font-weight:700">₹7,230</span></td><td><span class="bdg bdg-shipped">Shipped</span></td></tr>
+                        <tr><td style="font-family:var(--mono);color:var(--blue);font-weight:700">#ORD-8801</td><td>1 item</td><td><span style="font-family:var(--mono);font-weight:700">₹42,000</span></td><td><span class="bdg bdg-processing">Processing</span></td></tr>
+                    </tbody>
+                </table>
+            </div>
+        </div>
+        <div class="card-sn">
+            <div class="ch"><h3><i class="fa-solid fa-bell"></i> Notifications</h3><span class="bdg bdg-pending">5 New</span></div>
+            <div class="cb">
+                <div class="notif-i"><div class="nd2" style="background:var(--emerald)"></div><div class="notif-txt">Your order <strong>#ORD-8814</strong> has been shipped! <small>2 hours ago · Expected Mar 19</small></div></div>
+                <div class="notif-i"><div class="nd2" style="background:var(--blue)"></div><div class="notif-txt"><strong>SUMMER25</strong> — Get 25% off on electronics! <small>Today · Use before Apr 30</small></div></div>
+                <div class="notif-i"><div class="nd2" style="background:var(--amber)"></div><div class="notif-txt">iPhone 15 Pro is back in stock! <small>Yesterday</small></div></div>
+                <div class="notif-i"><div class="nd2" style="background:var(--t3)"></div><div class="notif-txt">Your review for Nike Air Max was published <small>2 days ago</small></div></div>
+            </div>
+        </div>
+    </div>
+</div>
+

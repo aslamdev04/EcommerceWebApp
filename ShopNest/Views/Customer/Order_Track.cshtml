@@ -1,0 +1,57 @@
+﻿
+@{
+    ViewData["Title"] = "Order_Track";
+    Layout = "~/Views/Shared/_Customer.cshtml";
+}
+
+<div class="cnt page-anim">
+
+    <div class="zpill cus"><i class="fa-solid fa-user-circle"></i> Customer Zone</div>
+    <div class="ph"><div><h1>Order Tracking</h1><p>Track your shipment in real-time.</p></div></div>
+    <div class="g3">
+        <div class="card-sn">
+            <div class="ch"><div><h3><i class="fa-solid fa-route"></i> Tracking Timeline</h3><div style="font-size:12px;color:var(--t3);margin-top:2px">Order #ORD-8814 · iPhone 15 Pro Max + 2 more items</div></div><span class="bdg bdg-shipped">In Transit</span></div>
+            <div class="cb">
+                <div style="background:var(--srf2);border-radius:10px;padding:16px;margin-bottom:20px">
+                    <div class="d-flex justify-content-between mb-2">
+                        <div style="text-align:center;flex:1"><div style="width:32px;height:32px;border-radius:50%;background:var(--emerald);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;margin:0 auto"><i class="fa-solid fa-check"></i></div><div style="font-size:10px;font-weight:600;color:var(--emerald);margin-top:4px">Ordered</div></div>
+                        <div style="flex:1;display:flex;align-items:center;margin-top:-18px"><div style="height:3px;background:var(--emerald);width:100%"></div></div>
+                        <div style="text-align:center;flex:1"><div style="width:32px;height:32px;border-radius:50%;background:var(--emerald);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;margin:0 auto"><i class="fa-solid fa-check"></i></div><div style="font-size:10px;font-weight:600;color:var(--emerald);margin-top:4px">Confirmed</div></div>
+                        <div style="flex:1;display:flex;align-items:center;margin-top:-18px"><div style="height:3px;background:var(--emerald);width:100%"></div></div>
+                        <div style="text-align:center;flex:1"><div style="width:32px;height:32px;border-radius:50%;background:var(--blue);color:#fff;display:flex;align-items:center;justify-content:center;font-size:13px;margin:0 auto;box-shadow:0 0 0 5px rgba(37,99,235,.15)"><i class="fa-solid fa-truck"></i></div><div style="font-size:10px;font-weight:600;color:var(--blue);margin-top:4px">Shipped</div></div>
+                        <div style="flex:1;display:flex;align-items:center;margin-top:-18px"><div style="height:3px;background:var(--bdr);width:100%"></div></div>
+                        <div style="text-align:center;flex:1"><div style="width:32px;height:32px;border-radius:50%;background:var(--bdr);color:var(--t3);display:flex;align-items:center;justify-content:center;font-size:13px;margin:0 auto"><i class="fa-solid fa-circle-check"></i></div><div style="font-size:10px;font-weight:600;color:var(--t3);margin-top:4px">Delivered</div></div>
+                    </div>
+                </div>
+                <div class="tl">
+                    <div class="tli"><div class="tld done"></div><div class="tl-title">Order Placed</div><div class="tl-meta">Mar 14, 2026 · 3:24 PM</div><div class="tl-desc">Order #ORD-8814 confirmed and payment received.</div></div>
+                    <div class="tli"><div class="tld done"></div><div class="tl-title">Order Confirmed &amp; Packed</div><div class="tl-meta">Mar 15, 2026 · 10:00 AM</div><div class="tl-desc">Your items have been packed and handed to the courier.</div></div>
+                    <div class="tli"><div class="tld done"></div><div class="tl-title">Shipped from Mumbai Warehouse</div><div class="tl-meta">Mar 15, 2026 · 6:40 PM</div><div class="tl-desc">Courier: BlueDart · Tracking No: BD8291038</div></div>
+                    <div class="tli"><div class="tld curr"></div><div class="tl-title">In Transit — Out for Delivery</div><div class="tl-meta">Mar 16, 2026 · 9:12 AM — Current Status</div><div class="tl-desc">Your package is with the delivery agent and will arrive today by 7 PM.</div></div>
+                    <div class="tli"><div class="tld pend"></div><div class="tl-title">Delivered to Doorstep</div><div class="tl-meta">Expected: Mar 16, 2026</div></div>
+                </div>
+            </div>
+        </div>
+        <div class="d-flex flex-column gap-3">
+            <div class="card-sn">
+                <div class="ch"><h3><i class="fa-solid fa-box"></i> Order Details</h3></div>
+                <div class="cb" style="font-size:13px;display:flex;flex-direction:column;gap:9px">
+                    <div class="d-flex justify-content-between"><span style="color:var(--t3)">Order ID</span><strong style="font-family:var(--mono)">#ORD-8814</strong></div>
+                    <div class="d-flex justify-content-between"><span style="color:var(--t3)">Items</span><strong>5 items</strong></div>
+                    <div class="d-flex justify-content-between"><span style="color:var(--t3)">Amount</span><strong style="font-family:var(--mono);color:var(--blue)">₹7,230</strong></div>
+                    <div class="d-flex justify-content-between"><span style="color:var(--t3)">Courier</span><strong>BlueDart</strong></div>
+                    <div class="d-flex justify-content-between"><span style="color:var(--t3)">ETA</span><strong style="color:var(--emerald)">Today by 7 PM</strong></div>
+                </div>
+            </div>
+            <div class="card-sn">
+                <div class="ch"><h3><i class="fa-solid fa-location-dot"></i> Delivery Address</h3></div>
+                <div class="cb" style="font-size:13px;color:var(--t2)"><div style="font-weight:700;color:var(--t1)">Priya Sharma</div><div class="mt-1">Flat 4B, Sunflower Apartments<br />Andheri West, Mumbai — 400058<br />📞 98765 43210</div></div>
+            </div>
+            <div class="card-sn">
+                <div class="ch"><h3><i class="fa-solid fa-headset"></i> Need Help?</h3></div>
+                <div class="cb d-flex gap-2"><button class="btn-sn btn-o btn-sm flex-fill justify-content-center"><i class="fa-solid fa-rotate-left"></i> Return</button><button class="btn-sn btn-o btn-sm flex-fill justify-content-center" style="border-color:var(--rose);color:var(--rose)"><i class="fa-solid fa-circle-xmark"></i> Cancel</button></div>
+            </div>
+        </div>
+    </div>
+</div>
+
