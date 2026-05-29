@@ -1,4 +1,4 @@
-﻿
+﻿@model List<ShopNest.Models.ViewModels.ProductMonViewModel>
 @{
     ViewData["Title"] = "Product_mon";
     Layout = "~/Views/Shared/_Admin.cshtml";
@@ -6,36 +6,251 @@
 
 <div class="cnt page-anim">
 
-    <div class="zpill adm"><i class="fa-solid fa-shield-halved"></i> Admin Zone</div>
+    <div class="zpill adm">
+        <i class="fa-solid fa-shield-halved"></i> Admin Zone
+    </div>
     <div class="ph">
-        <div><h1>Product Monitoring</h1><p>Monitor inventory, pricing, and product performance.</p></div>
-        <div class="ph-acts"><button class="btn-sn btn-o"><i class="fa-solid fa-filter"></i> Filter</button><button class="btn-sn btn-p"><i class="fa-solid fa-plus"></i> Add Product</button></div>
-    </div>
-    <div class="sg mb-18" style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
-        <div class="sc gr"><div class="sc-top"><div class="sc-ico gr"><i class="fa-solid fa-circle-check"></i></div></div><div class="sc-val">3,940</div><div class="sc-lbl">In Stock</div></div>
-        <div class="sc am"><div class="sc-top"><div class="sc-ico am"><i class="fa-solid fa-triangle-exclamation"></i></div></div><div class="sc-val">18</div><div class="sc-lbl">Low Stock</div></div>
-        <div class="sc ro"><div class="sc-top"><div class="sc-ico ro"><i class="fa-solid fa-ban"></i></div></div><div class="sc-val">322</div><div class="sc-lbl">Out of Stock</div></div>
-        <div class="sc bl"><div class="sc-top"><div class="sc-ico bl"><i class="fa-solid fa-boxes-stacked"></i></div></div><div class="sc-val">4,280</div><div class="sc-lbl">Total Products</div></div>
-    </div>
-    <div class="card-sn">
-        <div class="tf">
-            <div class="ts"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Search products…" /></div>
-            <select class="tsel"><option>All Categories</option><option>Electronics</option><option>Fashion</option><option>Home &amp; Living</option></select>
-            <select class="tsel"><option>All Stock</option><option>In Stock</option><option>Low Stock</option><option>Out of Stock</option></select>
+        <div>
+            <h1>Product Monitoring</h1>
+            <p>Monitor inventory, pricing, and product performance.</p>
         </div>
+        <div class="ph-acts">
+            <button class="btn-sn btn-o">
+                <i class="fa-solid fa-filter"></i> Filter
+            </button>
+            <a asp-controller="Admin" asp-action="Index"
+               class="btn-sn btn-p">
+                <i class="fa-solid fa-plus"></i> Add Product
+            </a>
+        </div>
+    </div>
+
+    @* ── Stats Cards ── *@
+    <div class="sg mb-18"
+         style="grid-template-columns:repeat(auto-fit,minmax(160px,1fr))">
+        <div class="sc gr">
+            <div class="sc-top">
+                <div class="sc-ico gr"><i class="fa-solid fa-circle-check"></i></div>
+            </div>
+            <div class="sc-val">@ViewBag.InStock</div>
+            <div class="sc-lbl">In Stock</div>
+        </div>
+        <div class="sc am">
+            <div class="sc-top">
+                <div class="sc-ico am">
+                    <i class="fa-solid fa-triangle-exclamation"></i>
+                </div>
+            </div>
+            <div class="sc-val">@ViewBag.LowStock</div>
+            <div class="sc-lbl">Low Stock</div>
+        </div>
+        <div class="sc ro">
+            <div class="sc-top">
+                <div class="sc-ico ro"><i class="fa-solid fa-ban"></i></div>
+            </div>
+            <div class="sc-val">@ViewBag.OutOfStock</div>
+            <div class="sc-lbl">Out of Stock</div>
+        </div>
+        <div class="sc bl">
+            <div class="sc-top">
+                <div class="sc-ico bl">
+                    <i class="fa-solid fa-boxes-stacked"></i>
+                </div>
+            </div>
+            <div class="sc-val">@ViewBag.TotalProducts</div>
+            <div class="sc-lbl">Total Products</div>
+        </div>
+    </div>
+
+    @* ── Table Card ── *@
+    <div class="card-sn">
+
+        @* Success/Error Messages *@
+        @if (TempData["Success"] != null)
+        {
+            <div class="alert alert-success mx-3 mt-3"
+                 style="border-radius:10px;font-size:13px">
+                <i class="fa-solid fa-circle-check"></i>
+                @TempData["Success"]
+            </div>
+        }
+
+        @* Filter Bar *@
+        <div class="tf">
+            <div class="ts">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text" id="searchInput"
+                       placeholder="Search products…"
+                       onkeyup="filterTable()" />
+            </div>
+            <select class="tsel" id="categoryFilter" onchange="filterTable()">
+                <option value="">All Categories</option>
+                @foreach (var cat in ViewBag.Categories)
+                {
+                    <option value="@cat">@cat</option>
+                }
+            </select>
+            <select class="tsel" id="stockFilter" onchange="filterTable()">
+                <option value="">All Stock</option>
+                <option value="In Stock">In Stock</option>
+                <option value="Low Stock">Low Stock</option>
+                <option value="Out of Stock">Out of Stock</option>
+            </select>
+        </div>
+
+        @* Table *@
         <div class="table-responsive">
-            <table class="dt">
-                <thead><tr><th>#</th><th>Product</th><th>Category</th><th>Price</th><th>Stock</th><th>Sales</th><th>Rating</th><th>Status</th><th>Actions</th></tr></thead>
+            <table class="dt" id="productTable">
+                <thead>
+                    <tr>
+                        <th>#</th>
+                        <th>Product</th>
+                        <th>Category</th>
+                        <th>Price</th>
+                        <th>Stock</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
                 <tbody>
-                    <tr><td style="font-family:var(--mono);font-size:11.5px;color:var(--t3)">#P-1042</td><td><div class="cc"><div style="font-size:20px">📱</div><div><div class="cn">iPhone 15 Pro Max</div><div class="ce">Apple</div></div></div></td><td>Electronics</td><td><span style="font-family:var(--mono);font-weight:700">₹1,29,900</span></td><td><span style="font-family:var(--mono);font-weight:700;color:var(--rose)">3</span></td><td><span style="font-family:var(--mono);font-weight:700">428</span></td><td>⭐ 4.8</td><td><span class="bdg bdg-low">Low Stock</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-trash"></i></button></div></td></tr>
-                    <tr><td style="font-family:var(--mono);font-size:11.5px;color:var(--t3)">#P-1039</td><td><div class="cc"><div style="font-size:20px">👟</div><div><div class="cn">Nike Air Max 270</div><div class="ce">Nike</div></div></div></td><td>Fashion</td><td><span style="font-family:var(--mono);font-weight:700">₹12,995</span></td><td><span style="font-family:var(--mono);font-weight:700;color:var(--emerald)">240</span></td><td><span style="font-family:var(--mono);font-weight:700">1,204</span></td><td>⭐ 4.6</td><td><span class="bdg bdg-instock">In Stock</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-trash"></i></button></div></td></tr>
-                    <tr><td style="font-family:var(--mono);font-size:11.5px;color:var(--t3)">#P-1027</td><td><div class="cc"><div style="font-size:20px">💻</div><div><div class="cn">MacBook Air M3</div><div class="ce">Apple</div></div></div></td><td>Electronics</td><td><span style="font-family:var(--mono);font-weight:700">₹1,14,900</span></td><td><span style="font-family:var(--mono);font-weight:700;color:var(--rose)">0</span></td><td><span style="font-family:var(--mono);font-weight:700">312</span></td><td>⭐ 4.9</td><td><span class="bdg bdg-oos">Out of Stock</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-trash"></i></button></div></td></tr>
-                    <tr><td style="font-family:var(--mono);font-size:11.5px;color:var(--t3)">#P-1018</td><td><div class="cc"><div style="font-size:20px">🛋️</div><div><div class="cn">L-Shape Sofa Set</div><div class="ce">FurnitureHub</div></div></div></td><td>Home &amp; Living</td><td><span style="font-family:var(--mono);font-weight:700">₹42,000</span></td><td><span style="font-family:var(--mono);font-weight:700;color:var(--emerald)">18</span></td><td><span style="font-family:var(--mono);font-weight:700">87</span></td><td>⭐ 4.3</td><td><span class="bdg bdg-instock">In Stock</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-trash"></i></button></div></td></tr>
-                    <tr><td style="font-family:var(--mono);font-size:11.5px;color:var(--t3)">#P-1011</td><td><div class="cc"><div style="font-size:20px">📸</div><div><div class="cn">Sony Alpha A7 IV</div><div class="ce">Sony</div></div></div></td><td>Electronics</td><td><span style="font-family:var(--mono);font-weight:700">₹2,49,990</span></td><td><span style="font-family:var(--mono);font-weight:700;color:var(--amber)">7</span></td><td><span style="font-family:var(--mono);font-weight:700">56</span></td><td>⭐ 4.7</td><td><span class="bdg bdg-low">Low Stock</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-trash"></i></button></div></td></tr>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="7" class="text-center"
+                                style="padding:40px;color:var(--t3)">
+                                <i class="fa-solid fa-box-open"
+                                   style="font-size:32px;margin-bottom:8px"></i>
+                                <div>No products found</div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var p in Model)
+                        {
+                            <tr>
+                                @* ID *@
+                                <td style="font-family:var(--mono);
+                                    font-size:11.5px;color:var(--t3)">
+                                    #P-@p.ProductId
+                                </td>
+
+                                @* Product Name + Icon *@
+                                <td>
+                                    <div class="cc">
+                                        <div style="font-size:20px">
+                                            @p.CategoryIcon
+                                        </div>
+                                        <div>
+                                            <div class="cn">@p.Name</div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                @* Category *@
+                                <td>@p.CategoryName</td>
+
+                                @* Price *@
+                                <td>
+                                    <span style="font-family:var(--mono);
+                                        font-weight:700">
+                                        ₹@p.Price
+                                    </span>
+                                </td>
+
+                                @* Stock *@
+                                <td>
+                                    <span style="font-family:var(--mono);
+                                        font-weight:700;
+                                        color:@p.StockColor">
+                                        @p.Stock
+                                    </span>
+                                </td>
+
+                                @* Status Badge *@
+                                <td>
+                                    <span class="bdg @p.StockBadgeClass">
+                                        @p.StockStatus
+                                    </span>
+                                </td>
+
+                                @* Actions *@
+                                <td>
+                                    <div class="abtns">
+                                        @* View *@
+                                        <button class="abtn v"
+                                                title="View">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+
+                                        @* Edit *@
+                                        <a asp-controller="Admin"
+                                           asp-action="EditProduct"
+                                           asp-route-id="@p.ProductId"
+                                           class="abtn e"
+                                           title="Edit">
+                                            <i class="fa-solid fa-pen"></i>
+                                        </a>
+
+                                        @* Delete *@
+                                        <form asp-controller="Admin"
+                                              asp-action="DeleteProduct"
+                                              method="post"
+                                              style="display:inline"
+                                              onsubmit="return confirm('Delete @p.Name?')">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@p.ProductId" />
+                                            <button type="submit"
+                                                    class="abtn d"
+                                                    title="Delete">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
                 </tbody>
             </table>
         </div>
-        <div class="pgn"><div class="pgn-info">Showing 1–5 of 4,280 products</div><div class="pgn-btns"><button class="pb on">1</button><button class="pb">2</button><button class="pb">3</button><button class="pb"><i class="fa-solid fa-chevron-right"></i></button></div></div>
+
+        @* Pagination Info *@
+        <div class="pgn">
+            <div class="pgn-info">
+                Showing @Model.Count products
+            </div>
+        </div>
     </div>
 </div>
 
+@section Scripts {
+    <script>
+        // Search + Filter
+        function filterTable() {
+            var search   = document.getElementById('searchInput')
+                                   .value.toLowerCase();
+            var category = document.getElementById('categoryFilter')
+                                   .value.toLowerCase();
+            var stock    = document.getElementById('stockFilter')
+                                   .value.toLowerCase();
+
+            var rows = document.querySelectorAll('#productTable tbody tr');
+
+            rows.forEach(function (row) {
+                var name    = row.cells[1]?.innerText.toLowerCase() || '';
+                var cat     = row.cells[2]?.innerText.toLowerCase() || '';
+                var status  = row.cells[5]?.innerText.toLowerCase() || '';
+
+                var matchSearch   = name.includes(search);
+                var matchCategory = category === '' || cat.includes(category);
+                var matchStock    = stock === '' || status.includes(stock);
+
+                row.style.display = (matchSearch && matchCategory && matchStock)
+                                    ? '' : 'none';
+            });
+        }
+    </script>
+}

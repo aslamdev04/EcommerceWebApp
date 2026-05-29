@@ -3,7 +3,25 @@
     ViewData["Title"] = "Index";
     Layout = "~/Views/Shared/_Admin.cshtml";
 }
+@model ShopNest.Models.ViewModels.ProductViewModel
+@* Dashboard div se pehle add karo *@ 
+@if (TempData["Success"] != null)
+{
+    <div class="alert alert-success d-flex align-items-center gap-2"
+         style="border-radius:10px;font-size:13px;margin-bottom:16px">
+        <i class="fa-solid fa-circle-check"></i>
+        @TempData["Success"]
+    </div>
+}
 
+@if (TempData["Error"] != null)
+{
+    <div class="alert alert-danger d-flex align-items-center gap-2"
+         style="border-radius:10px;font-size:13px;margin-bottom:16px">
+        <i class="fa-solid fa-circle-exclamation"></i>
+        @TempData["Error"]
+    </div>
+}
 <div class="cnt page-anim">
 
     <div class="zpill adm"><i class="fa-solid fa-shield-halved"></i> Admin Zone</div>
@@ -11,7 +29,11 @@
         <div><h1>Admin Dashboard</h1><p>Welcome back. Here's your store overview for today.</p></div>
         <div class="ph-acts">
             <button class="btn-sn btn-o"><i class="fa-solid fa-download"></i> Export</button>
-            <button class="btn-sn btn-p"><i class="fa-solid fa-plus"></i> Add Product</button>
+            <button class="btn-sn btn-p"
+                    data-bs-toggle="modal"
+                    data-bs-target="#addProductModal">
+                <i class="fa-solid fa-plus"></i> Add Product
+            </button>
         </div>
     </div>
     <div class="sg">
@@ -90,4 +112,189 @@
         </div>
     </div>
 </div>
+@* ─── ADD PRODUCT MODAL ─────────────────────────────────── *@
+<div class="modal fade" id="addProductModal" tabindex="-1">
+    <div class="modal-dialog modal-lg modal-dialog-centered">
+        <div class="modal-content" style="border-radius:16px;border:1px solid var(--bdr)">
 
+            @* Modal Header *@
+            <div class="modal-header"
+                 style="padding:20px 24px 16px;border-bottom:1px solid var(--bdr)">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width:40px;height:40px;border-radius:10px;
+                        background:linear-gradient(135deg,var(--blue),var(--cyan));
+                        display:flex;align-items:center;justify-content:center;
+                        font-size:16px;color:#fff">
+                        <i class="fa-solid fa-boxes-stacked"></i>
+                    </div>
+                    <div>
+                        <h5 style="margin:0;font-size:16px;font-weight:700">
+                            Add New Product
+                        </h5>
+                        <div style="font-size:12px;color:var(--t3)">
+                            Fill in the details below
+                        </div>
+                    </div>
+                </div>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            @* Modal Body *@
+            <div class="modal-body" style="padding:24px">
+                <form asp-controller="Admin"
+                      asp-action="AddProduct"
+                      method="post"
+                      enctype="multipart/form-data"
+                      id="addProductForm">
+
+                    @Html.AntiForgeryToken()
+
+                    @* Validation Summary *@
+                    <div id="productErrors"
+                         class="alert alert-danger d-none"
+                         style="font-size:13px"></div>
+
+                    <div class="row g-3">
+
+                        @* Product Name *@
+                        <div class="col-12">
+                            <label class="flbl">Product Name</label>
+                            <input asp-for="Name"
+                                   class="finp"
+                                   placeholder="e.g. iPhone 15 Pro Max" />
+                            <span asp-validation-for="Name"
+                                  class="text-danger"
+                                  style="font-size:11px"></span>
+                        </div>
+
+                        @* Category + Price *@
+                        <div class="col-md-6">
+                            <label class="flbl">Category</label>
+                            <select asp-for="CategoryId"
+                                    asp-items="ViewBag.Categories"
+                                    class="finp">
+                                <option value="">-- Select Category --</option>
+                            </select>
+                            <span asp-validation-for="CategoryId"
+                                  class="text-danger"
+                                  style="font-size:11px"></span>
+                        </div>
+
+                        <div class="col-md-6">
+                            <label class="flbl">Price (₹)</label>
+                            <input asp-for="Price"
+                                   type="number"
+                                   class="finp"
+                                   placeholder="e.g. 999" />
+                            <span asp-validation-for="Price"
+                                  class="text-danger"
+                                  style="font-size:11px"></span>
+                        </div>
+
+                        @* Stock + SKU *@
+                        <div class="col-md-6">
+                            <label class="flbl">Stock Quantity</label>
+                            <input asp-for="Stock"
+                                   type="number"
+                                   class="finp"
+                                   placeholder="e.g. 50" />
+                            <span asp-validation-for="Stock"
+                                  class="text-danger"
+                                  style="font-size:11px"></span>
+                        </div>
+
+                        @* <div class="col-md-6">
+                            <label class="flbl">SKU Code</label>
+                            <input asp-for="SKU"
+                                   class="finp"
+                                   placeholder="e.g. IPH-15-PRO-256" />
+                            <span asp-validation-for="SKU"
+                                  class="text-danger"
+                                  style="font-size:11px"></span>
+                        </div> *@
+
+                        @* Description *@
+                        <div class="col-12">
+                            <label class="flbl">Description</label>
+                            <textarea asp-for="Description"
+                                      class="finp"
+                                      rows="3"
+                                      placeholder="Write product description..."
+                                      style="resize:none"></textarea>
+                            <span asp-validation-for="Description"
+                                  class="text-danger"
+                                  style="font-size:11px"></span>
+                        </div>
+
+                        @* Image Upload *@
+                        <div class="col-12">
+                            <label class="flbl">Product Image</label>
+                            <div style="border:2px dashed var(--bdr);
+                                border-radius:10px;padding:20px;
+                                text-align:center;cursor:pointer;
+                                background:var(--bg2)"
+                                 onclick="document.getElementById('imgInput').click()">
+                                <div id="imgPreview">
+                                    <i class="fa-solid fa-cloud-arrow-up"
+                                       style="font-size:24px;color:var(--t3)"></i>
+                                    <div style="font-size:13px;color:var(--t3);margin-top:8px">
+                                        Click to upload image
+                                    </div>
+                                    <div style="font-size:11px;color:var(--t3)">
+                                        PNG, JPG up to 5MB
+                                    </div>
+                                </div>
+                                <img id="imgThumb"
+                                     src="#"
+                                     style="display:none;max-height:120px;
+                                border-radius:8px" />
+                            </div>
+                            <input type="file"
+                                   id="imgInput"
+                                   name="ImageFile"
+                                   accept="image/*"
+                                   style="display:none"
+                                   onchange="previewImage(this)" />
+                        </div>
+
+                    </div>
+                </form>
+            </div>
+
+            @* Modal Footer *@
+            <div class="modal-footer"
+                 style="padding:16px 24px;border-top:1px solid var(--bdr)">
+                <button type="button"
+                        class="btn-sn btn-o"
+                        data-bs-dismiss="modal">
+                    <i class="fa-solid fa-xmark"></i> Cancel
+                </button>
+                <button type="submit"
+                        form="addProductForm"
+                        class="btn-sn btn-p">
+                    <i class="fa-solid fa-plus"></i> Add Product
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>
+
+@* Image Preview Script *@
+@section Scripts {
+    <script>
+        function previewImage(input) {
+            if (input.files && input.files[0]) {
+                var reader = new FileReader();
+                reader.onload = function (e) {
+                    document.getElementById('imgThumb').src = e.target.result;
+                    document.getElementById('imgThumb').style.display = 'block';
+                    document.getElementById('imgPreview').style.display = 'none';
+                }
+                reader.readAsDataURL(input.files[0]);
+            }
+        }
+    </script>
+}

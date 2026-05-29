@@ -1,7 +1,9 @@
-﻿using Microsoft.AspNetCore.Mvc;
+﻿using Microsoft.AspNetCore.Authorization;
+using Microsoft.AspNetCore.Mvc;
 
 namespace ShopNest.Controllers
 {
+    [Authorize(Roles = "User")]
     public class CustomerController : Controller
     {
         public IActionResult Index()
