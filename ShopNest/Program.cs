@@ -79,7 +79,7 @@ namespace ShopNest
             }
 
             app.Run();
-            app.Run();
+       
         }
     }
 }

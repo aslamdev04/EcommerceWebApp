@@ -1,49 +1,285 @@
-﻿
+﻿@model List<ShopNest.Models.ViewModels.OrderMgmtViewModel>
 @{
     ViewData["Title"] = "Order_mgmt";
     Layout = "~/Views/Shared/_Admin.cshtml";
+    string selected = ViewBag.SelectedStatus ?? "All";
 }
 
 <div class="cnt page-anim">
 
-    <div class="zpill adm"><i class="fa-solid fa-shield-halved"></i> Admin Zone</div>
+    <div class="zpill adm">
+        <i class="fa-solid fa-shield-halved"></i> Admin Zone
+    </div>
+
     <div class="ph">
-        <div><h1>Order Management</h1><p>Manage all customer orders and update their statuses.</p></div>
-        <div class="ph-acts"><button class="btn-sn btn-o"><i class="fa-solid fa-download"></i> Export</button></div>
+        <div>
+            <h1>Order Management</h1>
+            <p>Manage all customer orders and update their statuses.</p>
+        </div>
+        <div class="ph-acts">
+            <button class="btn-sn btn-o">
+                <i class="fa-solid fa-download"></i> Export
+            </button>
+        </div>
     </div>
-    <div class="sg mb-18" style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
-        <div class="sc am"><div class="sc-top"><div class="sc-ico am"><i class="fa-solid fa-hourglass-half"></i></div></div><div class="sc-val">34</div><div class="sc-lbl">Pending</div></div>
-        <div class="sc bl"><div class="sc-top"><div class="sc-ico bl"><i class="fa-solid fa-gear"></i></div></div><div class="sc-val">212</div><div class="sc-lbl">Processing</div></div>
-        <div class="sc cy"><div class="sc-top"><div class="sc-ico cy"><i class="fa-solid fa-truck"></i></div></div><div class="sc-val">841</div><div class="sc-lbl">Shipped</div></div>
-        <div class="sc gr"><div class="sc-top"><div class="sc-ico gr"><i class="fa-solid fa-circle-check"></i></div></div><div class="sc-val">8,083</div><div class="sc-lbl">Delivered</div></div>
-        <div class="sc ro"><div class="sc-top"><div class="sc-ico ro"><i class="fa-solid fa-ban"></i></div></div><div class="sc-val">471</div><div class="sc-lbl">Cancelled</div></div>
+
+    @* Messages *@
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success mb-3"
+             style="border-radius:10px;font-size:13px">
+            <i class="fa-solid fa-circle-check"></i> @TempData["Success"]
+        </div>
+    }
+
+    @* ── Stats Cards ── *@
+    <div class="sg mb-18"
+         style="grid-template-columns:repeat(auto-fit,minmax(150px,1fr))">
+        <div class="sc am">
+            <div class="sc-top">
+                <div class="sc-ico am">
+                    <i class="fa-solid fa-hourglass-half"></i>
+                </div>
+            </div>
+            <div class="sc-val">@ViewBag.PendingCount</div>
+            <div class="sc-lbl">Pending</div>
+        </div>
+        <div class="sc bl">
+            <div class="sc-top">
+                <div class="sc-ico bl"><i class="fa-solid fa-gear"></i></div>
+            </div>
+            <div class="sc-val">@ViewBag.ProcessingCount</div>
+            <div class="sc-lbl">Processing</div>
+        </div>
+        <div class="sc cy">
+            <div class="sc-top">
+                <div class="sc-ico cy"><i class="fa-solid fa-truck"></i></div>
+            </div>
+            <div class="sc-val">@ViewBag.ShippedCount</div>
+            <div class="sc-lbl">Shipped</div>
+        </div>
+        <div class="sc gr">
+            <div class="sc-top">
+                <div class="sc-ico gr">
+                    <i class="fa-solid fa-circle-check"></i>
+                </div>
+            </div>
+            <div class="sc-val">@ViewBag.DeliveredCount</div>
+            <div class="sc-lbl">Delivered</div>
+        </div>
+        <div class="sc ro">
+            <div class="sc-top">
+                <div class="sc-ico ro"><i class="fa-solid fa-ban"></i></div>
+            </div>
+            <div class="sc-val">@ViewBag.CancelledCount</div>
+            <div class="sc-lbl">Cancelled</div>
+        </div>
     </div>
+
     <div class="card-sn">
+
+        @* ── Status Tabs ── *@
         <div class="tabr">
-            <button class="tabb on">All Orders</button>
-            <button class="tabb">Pending (34)</button>
-            <button class="tabb">Processing (212)</button>
-            <button class="tabb">Shipped (841)</button>
-            <button class="tabb">Delivered</button>
-            <button class="tabb">Cancelled</button>
+            <a asp-action="Order_mgmt" asp-route-status="All"
+               class="tabb @(selected == "All" ? "on" : "")">
+                All Orders
+            </a>
+            <a asp-action="Order_mgmt" asp-route-status="Pending"
+               class="tabb @(selected == "Pending" ? "on" : "")">
+                Pending (@ViewBag.PendingCount)
+            </a>
+            <a asp-action="Order_mgmt" asp-route-status="Processing"
+               class="tabb @(selected == "Processing" ? "on" : "")">
+                Processing (@ViewBag.ProcessingCount)
+            </a>
+            <a asp-action="Order_mgmt" asp-route-status="Shipped"
+               class="tabb @(selected == "Shipped" ? "on" : "")">
+                Shipped (@ViewBag.ShippedCount)
+            </a>
+            <a asp-action="Order_mgmt" asp-route-status="Delivered"
+               class="tabb @(selected == "Delivered" ? "on" : "")">
+                Delivered
+            </a>
+            <a asp-action="Order_mgmt" asp-route-status="Cancelled"
+               class="tabb @(selected == "Cancelled" ? "on" : "")">
+                Cancelled
+            </a>
         </div>
+
+        @* ── Search Bar ── *@
         <div class="tf">
-            <div class="ts"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Search by order ID, customer…" /></div>
-            <select class="tsel"><option>All Dates</option><option>Today</option><option>This Week</option><option>This Month</option></select>
+            <div class="ts">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text"
+                       id="orderSearch"
+                       placeholder="Search by order ID, customer…"
+                       onkeyup="searchOrders()" />
+            </div>
+            <select class="tsel" id="dateFilter" onchange="searchOrders()">
+                <option value="">All Dates</option>
+                <option value="today">Today</option>
+                <option value="week">This Week</option>
+                <option value="month">This Month</option>
+            </select>
         </div>
+
+        @* ── Table ── *@
         <div class="table-responsive">
-            <table class="dt">
-                <thead><tr><th>Order ID</th><th>Customer</th><th>Items</th><th>Amount</th><th>Date</th><th>Payment</th><th>Status</th><th>Actions</th></tr></thead>
+            <table class="dt" id="ordersTable">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Customer</th>
+                        <th>Items</th>
+                        <th>Amount</th>
+                        <th>Date</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
                 <tbody>
-                    <tr><td style="font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:700">#ORD-8821</td><td><div class="cc"><div class="cav" style="background:var(--blue-l);color:var(--blue)">PS</div><div><div class="cn">Priya Sharma</div></div></div></td><td>3 items</td><td><span style="font-family:var(--mono);font-weight:700">₹18,450</span></td><td>Mar 16, 2026</td><td><span class="bdg bdg-paid">Paid</span></td><td><span class="bdg bdg-delivered">Delivered</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button></div></td></tr>
-                    <tr><td style="font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:700">#ORD-8820</td><td><div class="cc"><div class="cav" style="background:#d1fae5;color:var(--emerald)">AK</div><div><div class="cn">Arjun Kumar</div></div></div></td><td>1 item</td><td><span style="font-family:var(--mono);font-weight:700">₹1,29,900</span></td><td>Mar 15, 2026</td><td><span class="bdg bdg-paid">Paid</span></td><td><span class="bdg bdg-shipped">Shipped</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button></div></td></tr>
-                    <tr><td style="font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:700">#ORD-8814</td><td><div class="cc"><div class="cav" style="background:#fef3c7;color:var(--amber)">RM</div><div><div class="cn">Riya Menon</div></div></div></td><td>5 items</td><td><span style="font-family:var(--mono);font-weight:700">₹7,230</span></td><td>Mar 14, 2026</td><td><span class="bdg bdg-paid">Paid</span></td><td><span class="bdg bdg-processing">Processing</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button></div></td></tr>
-                    <tr><td style="font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:700">#ORD-8809</td><td><div class="cc"><div class="cav" style="background:#ffe4e6;color:var(--rose)">SR</div><div><div class="cn">Sanjay Rao</div></div></div></td><td>2 items</td><td><span style="font-family:var(--mono);font-weight:700">₹3,100</span></td><td>Mar 13, 2026</td><td><span class="bdg bdg-refund">Refunded</span></td><td><span class="bdg bdg-cancelled">Cancelled</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button></div></td></tr>
-                    <tr><td style="font-family:var(--mono);font-size:12px;color:var(--blue);font-weight:700">#ORD-8801</td><td><div class="cc"><div class="cav" style="background:#ede9fe;color:var(--violet)">NP</div><div><div class="cn">Nisha Patel</div></div></div></td><td>1 item</td><td><span style="font-family:var(--mono);font-weight:700">₹42,000</span></td><td>Mar 12, 2026</td><td><span class="bdg bdg-paid">Paid</span></td><td><span class="bdg bdg-pending">Pending</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button></div></td></tr>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="7"
+                                class="text-center"
+                                style="padding:40px;color:var(--t3)">
+                                <i class="fa-solid fa-box-open"
+                                   style="font-size:32px;margin-bottom:8px"></i>
+                                <div>No orders found</div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var order in Model)
+                        {
+                            <tr>
+                                @* Order ID *@
+                                <td style="font-family:var(--mono);font-size:12px;
+                                    color:var(--blue);font-weight:700">
+                                    #ORD-@order.OrderId.ToString("D4")
+                                </td>
+
+                                @* Customer *@
+                                <td>
+                                    <div class="cc">
+                                        <div class="cav"
+                                             style="@order.AvatarColor">
+                                            @order.CustomerInitials
+                                        </div>
+                                        <div>
+                                            <div class="cn">
+                                                @order.CustomerName
+                                            </div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                @* Items *@
+                                <td>@order.ItemCount items</td>
+
+                                @* Amount *@
+                                <td>
+                                    <span style="font-family:var(--mono);
+                                        font-weight:700">
+                                        ₹@order.TotalAmount.ToString("N0")
+                                    </span>
+                                </td>
+
+                                @* Date *@
+                                <td style="font-size:12.5px;color:var(--t3)">
+                                    @order.FormattedDate
+                                </td>
+
+                                @* Status *@
+                                <td>
+                                    <span class="bdg @order.StatusBadgeClass">
+                                        @order.Status
+                                    </span>
+                                </td>
+
+                                @* Actions *@
+                                <td>
+                                    <div class="abtns">
+
+                                        @* View *@
+                                        <button class="abtn v"
+                                                title="View Details">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+
+                                        @* Status Update Dropdown *@
+                                        <div class="dropdown d-inline">
+                                            <button class="abtn e dropdown-toggle"
+                                                    data-bs-toggle="dropdown"
+                                                    title="Update Status">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end"
+                                                style="font-size:13px;min-width:160px">
+                                                @foreach (var s in new[]
+                                                {
+                                                    "Pending",
+                                                    "Processing",
+                                                    "Shipped",
+                                                    "Delivered",
+                                                    "Cancelled"
+                                                })
+                                                {
+                                                    <li>
+                                                        <form asp-controller="Admin"
+                                                              asp-action="UpdateOrderStatus"
+                                                              method="post">
+                                                            @Html.AntiForgeryToken()
+                                                            <input type="hidden"
+                                                                   name="orderId"
+                                                                   value="@order.OrderId" />
+                                                            <input type="hidden"
+                                                                   name="status"
+                                                                   value="@s" />
+                                                            <button type="submit"
+                                                                    class="dropdown-item
+                                                                @(order.Status == s
+                                                                        ? "active" : "")">
+                                                                @s
+                                                            </button>
+                                                        </form>
+                                                    </li>
+                                                }
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
                 </tbody>
             </table>
         </div>
-        <div class="pgn"><div class="pgn-info">Showing 1–5 of 9,641 orders</div><div class="pgn-btns"><button class="pb on">1</button><button class="pb">2</button><button class="pb">3</button><button class="pb"><i class="fa-solid fa-chevron-right"></i></button></div></div>
+
+        @* Pagination Info *@
+        <div class="pgn">
+            <div class="pgn-info">
+                Showing @Model.Count orders
+            </div>
+        </div>
+
     </div>
 </div>
 
+@section Scripts {
+    <script>
+        function searchOrders() {
+            var input = document.getElementById('orderSearch')
+                                .value.toLowerCase();
+            var rows  = document.querySelectorAll('#ordersTable tbody tr');
+
+            rows.forEach(function (row) {
+                var text = row.innerText.toLowerCase();
+                row.style.display = text.includes(input) ? '' : 'none';
+            });
+        }
+    </script>
+}

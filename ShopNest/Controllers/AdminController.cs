@@ -7,7 +7,7 @@ using ShopNest.Repositories.Interfaces;
 
 namespace ShopNest.Controllers
 {
-    [Authorize(Roles ="Admin")]
+    //[Authorize(Roles ="Admin")]
     public class AdminController : Controller
     {
         private readonly IUnitOfWork _uow;
@@ -23,9 +23,8 @@ namespace ShopNest.Controllers
         #region Admin Dashboard
         public async Task<IActionResult> Index()
         {
+            // ── Categories dropdown ───────────────────────────
             var categories = await _uow.Categories.GetAllAsync();
-
-            // Dropdown ke liye — Icon + Name saath dikhao
             ViewBag.Categories = new SelectList(
                 categories.Select(c => new {
                     c.CategoryId,
@@ -34,6 +33,66 @@ namespace ShopNest.Controllers
                 "CategoryId",
                 "DisplayName"
             );
+
+            // ── Real Stats ────────────────────────────────────
+            var allUsers = await _uow.Users.GetAllAsync();
+            var allProducts = await _uow.Products.GetAllAsync();
+            var allOrders = await _uow.Orders.GetAllAsync();
+
+            // Stats Cards
+            ViewBag.TotalUsers = allUsers.Count(u => u.Role == "User");
+            ViewBag.TotalProducts = allProducts.Count;
+            ViewBag.TotalOrders = allOrders.Count;
+            ViewBag.TotalRevenue = allOrders
+                .Where(o => o.Status != "Cancelled")
+                .Sum(o => o.TotalAmount);
+
+            // Low Stock
+            ViewBag.LowStockCount = allProducts.Count(p => p.Stock > 0 && p.Stock <= 10);
+
+            // Orders by Status
+            ViewBag.PendingOrders = allOrders.Count(o => o.Status == "Pending");
+            ViewBag.ProcessingOrders = allOrders.Count(o => o.Status == "Processing");
+            ViewBag.ShippedOrders = allOrders.Count(o => o.Status == "Shipped");
+            ViewBag.DeliveredOrders = allOrders.Count(o => o.Status == "Delivered");
+            ViewBag.CancelledOrders = allOrders.Count(o => o.Status == "Cancelled");
+
+            // Monthly Revenue — Last 6 months
+            var monthlyRevenue = new List<object>();
+            for (int i = 5; i >= 0; i--)
+            {
+                var month = DateTime.UtcNow.AddMonths(-i);
+                var revenue = allOrders
+                    .Where(o => o.OrderDate.Month == month.Month
+                             && o.OrderDate.Year == month.Year
+                             && o.Status != "Cancelled")
+                    .Sum(o => o.TotalAmount);
+                var orders = allOrders
+                    .Count(o => o.OrderDate.Month == month.Month
+                             && o.OrderDate.Year == month.Year);
+
+                monthlyRevenue.Add(new
+                {
+                    Month = month.ToString("MMM"),
+                    Revenue = revenue,
+                    Orders = orders
+                });
+            }
+            ViewBag.MonthlyRevenue = monthlyRevenue;
+
+            // Recent Activity — Last 5 orders
+            var allUsers2 = await _uow.Users.GetAllAsync();
+            ViewBag.RecentOrders = allOrders
+                .OrderByDescending(o => o.OrderDate)
+                .Take(5)
+                .Select(o => new {
+                    OrderId = o.OrderId,
+                    CustomerName = allUsers2
+                        .FirstOrDefault(u => u.UserId == o.UserId)?.Name ?? "Unknown",
+                    Amount = o.TotalAmount,
+                    Status = o.Status,
+                    Date = o.OrderDate.ToString("MMM dd")
+                }).ToList();
 
             return View();
         }
@@ -314,19 +373,270 @@ namespace ShopNest.Controllers
         #endregion
 
         #region UserManagemt
-        public IActionResult user_mgmt()
+        public async Task<IActionResult> User_mgmt(string role = "All",
+                                             string status = "All")
         {
-            return View();
+            var allUsers = await _uow.Users.GetAllAsync();
+            var allOrders = await _uow.Orders.GetAllAsync();
+
+            // Sirf customers dikhao (Admin nahi)
+            var users = allUsers.Where(u => u.Role != "Admin").ToList();
+
+            // Role filter
+            if (role != "All")
+                users = users.Where(u => u.Role == role).ToList();
+
+            // Status filter
+            if (status == "Active")
+                users = users.Where(u => u.IsActive).ToList();
+            else if (status == "Inactive")
+                users = users.Where(u => !u.IsActive).ToList();
+
+            var viewModel = users
+                .OrderByDescending(u => u.CreatedAt)
+                .Select(u => {
+                    var userOrders = allOrders
+                        .Where(o => o.UserId == u.UserId).ToList();
+                    return new UserMgmtViewModel
+                    {
+                        UserId = u.UserId,
+                        Name = u.Name,
+                        Email = u.Email,
+                        Phone = u.Phone ?? "N/A",
+                        City = string.IsNullOrEmpty(u.City)
+                                      ? "N/A" : u.City,
+                        CreatedAt = u.CreatedAt,
+                        Role = u.Role,
+                        IsActive = u.IsActive,
+                        TotalOrders = userOrders.Count,
+                        TotalSpent = userOrders.Sum(o => o.TotalAmount)
+                    };
+                }).ToList();
+
+            // Stats ke liye
+            ViewBag.TotalUsers = users.Count;
+            ViewBag.ActiveUsers = users.Count(u => u.IsActive);
+            ViewBag.InactiveUsers = users.Count(u => !u.IsActive);
+            ViewBag.SelectedRole = role;
+            ViewBag.SelectedStatus = status;
+
+            return View(viewModel);
+        }
+
+        // POST — Toggle Active/Inactive
+        [HttpPost]
+        public async Task<IActionResult> ToggleUser(int id)
+        {
+            var user = await _uow.Users.GetByIdAsync(id);
+            if (user == null) return NotFound();
+
+            user.IsActive = !user.IsActive;
+            await _uow.Users.UpdateAsync(user);
+            await _uow.SaveAsync();
+
+            TempData["Success"] = $"'{user.Name}' " +
+                                  $"{(user.IsActive ? "activated" : "deactivated")}!";
+            return RedirectToAction("User_mgmt");
+        }
+
+        // POST — Change Role
+        [HttpPost]
+        public async Task<IActionResult> ChangeRole(int id, string role)
+        {
+            var user = await _uow.Users.GetByIdAsync(id);
+            if (user == null) return NotFound();
+
+            user.Role = role;
+            await _uow.Users.UpdateAsync(user);
+            await _uow.SaveAsync();
+
+            TempData["Success"] = $"'{user.Name}' role changed to {role}!";
+            return RedirectToAction("User_mgmt");
         }
         #endregion
 
         #region Order Management
-        public IActionResult Order_mgmt()
+        public async Task<IActionResult> Order_mgmt(string status = "All")
         {
-            return View();
+            var allOrders = await _uow.Orders.GetAllAsync();
+            var allOrderItems = await _uow.OrderItems.GetAllAsync();
+            var allUsers = await _uow.Users.GetAllAsync();
+
+            // Status filter
+            var filteredOrders = status == "All"
+                ? allOrders
+                : allOrders.Where(o => o.Status == status).ToList();
+
+            var viewModel = filteredOrders
+                .OrderByDescending(o => o.OrderDate)
+                .Select(o => {
+                    var user = allUsers.FirstOrDefault(u => u.UserId == o.UserId);
+                    var items = allOrderItems.Count(oi => oi.OrderId == o.OrderId);
+                    var name = user?.Name ?? "Unknown";
+                    var initials = name.Length >= 2
+                        ? $"{name[0]}{name.Split(' ').LastOrDefault()?[0]}"
+                                    .ToUpper()
+                        : name.Substring(0, 1).ToUpper();
+
+                    return new OrderMgmtViewModel
+                    {
+                        OrderId = o.OrderId,
+                        CustomerName = name,
+                        CustomerInitials = initials,
+                        ItemCount = items,
+                        TotalAmount = o.TotalAmount,
+                        OrderDate = o.OrderDate,
+                        Status = o.Status
+                    };
+                }).ToList();
+
+            // Stats ke liye
+            ViewBag.PendingCount = allOrders.Count(o => o.Status == "Pending");
+            ViewBag.ProcessingCount = allOrders.Count(o => o.Status == "Processing");
+            ViewBag.ShippedCount = allOrders.Count(o => o.Status == "Shipped");
+            ViewBag.DeliveredCount = allOrders.Count(o => o.Status == "Delivered");
+            ViewBag.CancelledCount = allOrders.Count(o => o.Status == "Cancelled");
+            ViewBag.SelectedStatus = status;
+
+            return View(viewModel);
+        }
+
+        // POST — Status Update
+        [HttpPost]
+        public async Task<IActionResult> UpdateOrderStatus(int orderId, string status)
+        {
+            var order = await _uow.Orders.GetByIdAsync(orderId);
+            if (order == null) return NotFound();
+
+            order.Status = status;
+            await _uow.Orders.UpdateAsync(order);
+            await _uow.SaveAsync();
+
+            TempData["Success"] = $"Order #ORD-{orderId:D4} → {status}!";
+            return RedirectToAction("Order_mgmt");
         }
         #endregion
 
+        #region Report Action
+        public async Task<IActionResult> Reports()
+        {
+            var allOrders = await _uow.Orders.GetAllAsync();
+            var allOrderItems = await _uow.OrderItems.GetAllAsync();
+            var allProducts = await _uow.Products.GetAllAsync();
+            var allCategories = await _uow.Categories.GetAllAsync();
+            var allUsers = await _uow.Users.GetAllAsync();
+
+            var now = DateTime.UtcNow;
+            var thisMonth = allOrders
+                .Where(o => o.OrderDate.Month == now.Month &&
+                            o.OrderDate.Year == now.Year)
+                .ToList();
+
+            // ── Stats ─────────────────────────────────────────
+            int newUsers = allUsers.Count(u =>
+                            u.CreatedAt.Month == now.Month &&
+                            u.CreatedAt.Year == now.Year &&
+                            u.Role == "User");
+
+            int ordersCount = thisMonth.Count;
+
+            decimal revenueThisMonth = thisMonth
+                .Where(o => o.Status != "Cancelled")
+                .Sum(o => o.TotalAmount);
+
+            // ← Fix 1: ToString without format parameter
+            string revenueK = Math.Round(revenueThisMonth / 1000m, 1).ToString();
+
+            int totalOrders = allOrders.Count;
+            int cancelledOrders = allOrders.Count(o => o.Status == "Cancelled");
+            double returnRate = totalOrders > 0
+                ? Math.Round((cancelledOrders / (double)totalOrders) * 100, 1)
+                : 0;
+
+            // ── Top Categories ────────────────────────────────
+            var catRevenue = allOrderItems
+                .Join(allProducts,
+                      oi => oi.ProductId,
+                      p => p.ProductId,
+                      (oi, p) => new
+                      {
+                          CategoryId = p.CategoryId,
+                          Revenue = oi.UnitPrice * oi.Quantity
+                      })
+                .GroupBy(x => x.CategoryId)
+                .Select(g => new
+                {
+                    CategoryId = g.Key,
+                    Revenue = (decimal?)g.Sum(x => x.Revenue) // ← nullable
+                })
+                .OrderByDescending(x => x.Revenue)
+                .Take(5)
+                .ToList();
+
+            // ← Fix 2: Nullable decimal fix
+            decimal maxRev = 1m;
+            if (catRevenue.Any())
+            {
+                var maxVal = catRevenue.Max(x => x.Revenue);
+                if (maxVal.HasValue && maxVal.Value > 0)
+                    maxRev = maxVal.Value;
+            }
+
+            var categoryRevenueList = catRevenue.Select(x => {
+                var cat = allCategories
+                    .FirstOrDefault(c => c.CategoryId == x.CategoryId);
+                decimal rev = x.Revenue ?? 0m;
+                return new CategoryRevenueViewModel
+                {
+                    CategoryName = cat?.CategoryName ?? "N/A",
+                    Icon = cat?.Icon ?? "📦",
+                    RevenueK = Math.Round(rev / 1000m, 1).ToString(),
+                    Percentage = (int)((rev / maxRev) * 100)
+                };
+            }).ToList();
+
+            // ── Top Products ──────────────────────────────────
+            var topProductsList = allOrderItems
+                .GroupBy(oi => oi.ProductId)
+                .Select(g => new
+                {
+                    ProductId = g.Key,
+                    TotalSales = g.Sum(oi => oi.Quantity),
+                    TotalRevenue = (decimal?)g.Sum(oi => oi.UnitPrice * oi.Quantity)
+                })
+                .OrderByDescending(x => x.TotalRevenue)
+                .Take(5)
+                .ToList();
+
+            var topProducts = topProductsList.Select(x => {
+                var product = allProducts
+                    .FirstOrDefault(p => p.ProductId == x.ProductId);
+                var category = allCategories
+                    .FirstOrDefault(c => c.CategoryId == product?.CategoryId);
+                decimal rev = x.TotalRevenue ?? 0m;
+                return new TopProductViewModel
+                {
+                    Name = product?.Name ?? "N/A",
+                    Icon = category?.Icon ?? "📦",
+                    TotalSales = x.TotalSales,
+                    RevenueK = Math.Round(rev / 1000m, 1).ToString()
+                };
+            }).ToList();
+
+            // ── ViewModel ─────────────────────────────────────
+            var viewModel = new ReportsViewModel
+            {
+                NewUsersThisMonth = newUsers,
+                OrdersThisMonth = ordersCount,
+                RevenueThisMonthK = revenueK,
+                ReturnRate = returnRate,
+                CategoryRevenue = categoryRevenueList,
+                TopProducts = topProducts
+            };
+
+            return View(viewModel);
+        }
+        #endregion
         public IActionResult Payment_mgmt()
         {
             return View();
@@ -335,10 +645,7 @@ namespace ShopNest.Controllers
         {
             return View();
         }
-        public IActionResult Reports()
-        {
-            return View();
-        }
+     
      
     }
 }

@@ -1,0 +1,65 @@
+﻿@{
+    ViewData["Title"] = "Order Placed!";
+    Layout = "~/Views/Shared/_Customer.cshtml";
+}
+
+<div class="cnt page-anim">
+    <div class="zpill cus">
+        <i class="fa-solid fa-user-circle"></i> Customer Zone
+    </div>
+
+    <div style="max-width:500px;margin:40px auto;text-align:center">
+        <div class="card-sn">
+            <div class="cb" style="padding:40px">
+
+                @* Success Icon *@
+                <div style="width:80px;height:80px;border-radius:50%;
+                    background:linear-gradient(135deg,#10b981,#059669);
+                    display:flex;align-items:center;justify-content:center;
+                    font-size:36px;color:#fff;margin:0 auto 20px">
+                    <i class="fa-solid fa-check"></i>
+                </div>
+
+                <h2 style="font-size:22px;font-weight:800;margin-bottom:8px">
+                    Order Placed! 🎉
+                </h2>
+
+                <div style="font-size:13px;color:var(--t3);margin-bottom:20px">
+                    @ViewBag.Message
+                </div>
+
+                @* Order ID *@
+                <div style="background:var(--bg2);border-radius:10px;
+                    padding:16px;margin-bottom:24px;
+                    font-family:var(--mono);font-size:20px;
+                    font-weight:800;color:var(--blue)">
+                    #ORD-@(((int)ViewBag.OrderId).ToString("D4"))
+                </div>
+
+                @* Info *@
+                <div style="font-size:12.5px;color:var(--t3);
+                    margin-bottom:24px;line-height:1.6">
+                    We have received your order and it is being processed.
+                    You will receive a confirmation shortly.
+                </div>
+
+                @* Buttons *@
+                <div class="d-flex gap-2 justify-content-center">
+                    <a asp-controller="Customer"
+                       asp-action="MyOrders"
+                       class="btn-sn btn-p">
+                        <i class="fa-solid fa-box-archive"></i>
+                        My Orders
+                    </a>
+                    <a asp-controller="Customer"
+                       asp-action="Browse"
+                       class="btn-sn btn-o">
+                        <i class="fa-solid fa-shop"></i>
+                        Shop More
+                    </a>
+                </div>
+
+            </div>
+        </div>
+    </div>
+</div>

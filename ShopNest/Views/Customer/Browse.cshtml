@@ -1,24 +1,24 @@
 ﻿@model List<ShopNest.Models.ViewModels.ProductBrowseViewModel>
 @{
-    ViewData["Title"] = "Products";
+    ViewData["Title"] = "Browse";
+    Layout = "~/Views/Shared/_Customer.cshtml";
 }
 
 <div class="cnt page-anim">
 
-    <div class="zpill gen">
-        <i class="fa-solid fa-globe"></i> General Zone
+    <div class="zpill cus">
+        <i class="fa-solid fa-user-circle"></i> Customer Zone
     </div>
 
     <div class="ph">
         <div>
-            <h1>All Products</h1>
-            <p>Browse our complete catalogue.</p>
+            <h1>Browse Products</h1>
+            <p>Discover thousands of products across all categories.</p>
         </div>
         <div class="ph-acts">
-            <form method="get" id="filterForm">
-                <input type="hidden"
-                       name="search"
-                       value="@ViewBag.Search" />
+
+            @* Category Filter *@
+            <form method="get" asp-action="Browse" id="filterForm">
                 <select name="categoryId"
                         class="tsel"
                         onchange="document.getElementById('filterForm').submit()">
@@ -26,38 +26,55 @@
                     @foreach (var cat in ViewBag.Categories)
                     {
                         <option value="@cat.CategoryId"
-                                selected="@(ViewBag.SelectedCategory ==
-                                                                            cat.CategoryId
+                                selected="@(ViewBag.SelectedCategory == cat.CategoryId
                                                                             ? "selected" : null)">
                             @cat.Icon @cat.CategoryName
                         </option>
                     }
                 </select>
+
+                @* Sort *@
                 <select name="sort"
                         class="tsel"
                         onchange="document.getElementById('filterForm').submit()">
-                    <option value="popular">Sort: Popular</option>
+                    <option value="popular"
+                            selected="@(ViewBag.SelectedSort == "popular"
+                                                                    ? "selected" : null)">
+                        Sort: Popularity
+                    </option>
                     <option value="price_asc"
                             selected="@(ViewBag.SelectedSort == "price_asc"
                                                                     ? "selected" : null)">
-                        Price: Low–High
+                        Price: Low to High
                     </option>
                     <option value="price_desc"
                             selected="@(ViewBag.SelectedSort == "price_desc"
                                                                     ? "selected" : null)">
-                        Price: High–Low
+                        Price: High to Low
                     </option>
                 </select>
             </form>
+
         </div>
     </div>
 
+    @* Success Message *@
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success mb-3"
+             style="border-radius:10px;font-size:13px">
+            <i class="fa-solid fa-circle-check"></i> @TempData["Success"]
+        </div>
+    }
+
+    @* Product Grid *@
     @if (!Model.Any())
     {
         <div class="text-center" style="padding:60px;color:var(--t3)">
-            <i class="fa-solid fa-box-open" style="font-size:48px"></i>
-            <div style="margin-top:8px;font-size:16px;font-weight:600">
-                No products found
+            <i class="fa-solid fa-box-open" style="font-size:48px;margin-bottom:16px"></i>
+            <div style="font-size:16px;font-weight:600">No products found</div>
+            <div style="font-size:13px;margin-top:4px">
+                Try a different category
             </div>
         </div>
     }
@@ -67,6 +84,8 @@
             @foreach (var p in Model)
             {
                 <div class="pcard">
+
+                    @* Product Image *@
                     <div class="pcard-img">
                         @if (p.ImageUrl != null &&
                              p.ImageUrl != "/images/default.png")
@@ -79,6 +98,8 @@
                         {
                             @p.CategoryIcon
                         }
+
+                        @* Out of Stock Badge *@
                         @if (p.IsOutOfStock)
                         {
                             <span class="pcard-badge"
@@ -87,32 +108,51 @@
                             </span>
                         }
                     </div>
+
+                    @* Product Body *@
                     <div class="pcard-body">
                         <div class="pcard-name">@p.Name</div>
                         <div class="pcard-cat">
                             @p.CategoryIcon @p.CategoryName
                         </div>
+
                         <div class="pcard-foot">
-                            <span class="pcard-price">
-                                ₹@p.Price?.ToString("N0")
-                            </span>
+                            <div>
+                                <span class="pcard-price">
+                                    ₹@p.Price.ToString()
+                                </span>
+                            </div>
+
+                            @* Add to Cart Button *@
                             @if (p.IsOutOfStock)
                             {
                                 <button class="pcard-addcart"
                                         disabled
                                         style="background:#ffe4e6;
                                     color:var(--rose);
+                                    border-color:rgba(225,29,72,.2);
                                     cursor:not-allowed">
                                     Out of Stock
                                 </button>
                             }
                             else
                             {
-                                <a asp-controller="Account"
-                                   asp-action="Login"
-                                   class="pcard-addcart">
-                                    Add Cart
-                                </a>
+                                <form asp-controller="Customer"
+                                      asp-action="AddToCart"
+                                      method="post">
+                                    @Html.AntiForgeryToken()
+                                    <input type="hidden"
+                                           name="productId"
+                                           value="@p.ProductId" />
+                                    <input type="hidden"
+                                           name="quantity"
+                                           value="1" />
+                                    <button type="submit"
+                                            class="pcard-addcart">
+                                        <i class="fa-solid fa-cart-plus"></i>
+                                        Add to Cart
+                                    </button>
+                                </form>
                             }
                         </div>
                     </div>
@@ -120,4 +160,5 @@
             }
         </div>
     }
+
 </div>

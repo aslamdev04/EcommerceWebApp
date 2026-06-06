@@ -1,38 +1,163 @@
-﻿@{
+﻿@model List<ShopNest.Models.ViewModels.ProductBrowseViewModel>
+@{
     ViewData["Title"] = "Home Page";
 }
 
+<div class="cnt page-anim">
 
-    <div class="cnt page-anim">
+    <div class="zpill gen">
+        <i class="fa-solid fa-globe"></i> General Zone
+    </div>
 
-        <div class="zpill gen"><i class="fa-solid fa-globe"></i> General Zone</div>
-        <div class="hero">
-            <h2>Shop Everything You Love 🛍️</h2>
-            <p>Millions of products across electronics, fashion, home, beauty &amp; more — delivered to your doorstep.</p>
-            <div class="hero-acts">
-                <div class="hero-search"><input type="text" placeholder="Search for products, brands, categories…" /><button><i class="fa-solid fa-magnifying-glass"></i></button></div>
-                <a href="products.html" class="btn-sn btn-p">Browse All Products →</a>
-            </div>
-        </div>
-        <div class="card-sn mb-18">
-            <div class="ch"><h3><i class="fa-solid fa-th"></i> Shop by Category</h3></div>
-            <div class="cb">
-                <div class="d-flex gap-3 flex-wrap">
-                    <div style="flex:1;min-width:100px;text-align:center;padding:16px 8px;border:1.5px solid var(--bdr);border-radius:10px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--blue)';this.style.background='var(--blue-l)'" onmouseout="this.style.borderColor='var(--bdr)';this.style.background=''"><div style="font-size:28px">📱</div><div style="font-size:12.5px;font-weight:700;margin-top:6px">Electronics</div></div>
-                    <div style="flex:1;min-width:100px;text-align:center;padding:16px 8px;border:1.5px solid var(--bdr);border-radius:10px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--blue)';this.style.background='var(--blue-l)'" onmouseout="this.style.borderColor='var(--bdr)';this.style.background=''"><div style="font-size:28px">👗</div><div style="font-size:12.5px;font-weight:700;margin-top:6px">Fashion</div></div>
-                    <div style="flex:1;min-width:100px;text-align:center;padding:16px 8px;border:1.5px solid var(--bdr);border-radius:10px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--blue)';this.style.background='var(--blue-l)'" onmouseout="this.style.borderColor='var(--bdr)';this.style.background=''"><div style="font-size:28px">🏠</div><div style="font-size:12.5px;font-weight:700;margin-top:6px">Home</div></div>
-                    <div style="flex:1;min-width:100px;text-align:center;padding:16px 8px;border:1.5px solid var(--bdr);border-radius:10px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--blue)';this.style.background='var(--blue-l)'" onmouseout="this.style.borderColor='var(--bdr)';this.style.background=''"><div style="font-size:28px">💄</div><div style="font-size:12.5px;font-weight:700;margin-top:6px">Beauty</div></div>
-                    <div style="flex:1;min-width:100px;text-align:center;padding:16px 8px;border:1.5px solid var(--bdr);border-radius:10px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--blue)';this.style.background='var(--blue-l)'" onmouseout="this.style.borderColor='var(--bdr)';this.style.background=''"><div style="font-size:28px">📚</div><div style="font-size:12.5px;font-weight:700;margin-top:6px">Books</div></div>
-                    <div style="flex:1;min-width:100px;text-align:center;padding:16px 8px;border:1.5px solid var(--bdr);border-radius:10px;cursor:pointer;transition:all .15s" onmouseover="this.style.borderColor='var(--blue)';this.style.background='var(--blue-l)'" onmouseout="this.style.borderColor='var(--bdr)';this.style.background=''"><div style="font-size:28px">🏋️</div><div style="font-size:12.5px;font-weight:700;margin-top:6px">Sports</div></div>
+    @* ── Hero Section ── *@
+    <div class="hero">
+        <h2>Shop Everything You Love 🛍️</h2>
+        <p>
+            Millions of products across electronics, fashion, home,
+            beauty &amp; more — delivered to your doorstep.
+        </p>
+        <div class="hero-acts">
+            <form asp-controller="Home"
+                  asp-action="Search"
+                  method="get">
+                <div class="hero-search">
+                    <input type="text"
+                           name="q"
+                           placeholder="Search for products, brands…" />
+                    <button type="submit">
+                        <i class="fa-solid fa-magnifying-glass"></i>
+                    </button>
                 </div>
-            </div>
-        </div>
-        <div style="font-size:15px;font-weight:800;margin-bottom:14px;letter-spacing:-.3px">🔥 Featured Products</div>
-        <div class="pgrid">
-            <div class="pcard"><div class="pcard-img">📱<span class="pcard-badge sale">SALE</span></div><div class="pcard-body"><div class="pcard-name">iPhone 15 Pro Max</div><div class="pcard-cat">Electronics · Apple</div><div class="pcard-foot"><div><span class="pcard-price">₹1,24,900</span><span class="pcard-oldprice">₹1,29,900</span></div><a href="login.html" class="pcard-addcart">Buy Now</a></div></div></div>
-            <div class="pcard"><div class="pcard-img" style="background:linear-gradient(135deg,#d1fae5,#a7f3d0)">👟<span class="pcard-badge new">NEW</span></div><div class="pcard-body"><div class="pcard-name">Nike Air Max 270</div><div class="pcard-cat">Fashion · Nike</div><div class="pcard-foot"><div><span class="pcard-price">₹12,995</span></div><a href="login.html" class="pcard-addcart">Buy Now</a></div></div></div>
-            <div class="pcard"><div class="pcard-img" style="background:linear-gradient(135deg,#ffedd5,#fed7aa)">⌚<span class="pcard-badge new">NEW</span></div><div class="pcard-body"><div class="pcard-name">Apple Watch Series 9</div><div class="pcard-cat">Electronics · Apple</div><div class="pcard-foot"><div><span class="pcard-price">₹41,900</span></div><a href="login.html" class="pcard-addcart">Buy Now</a></div></div></div>
+            </form>
+            <a asp-controller="Home"
+               asp-action="Products"
+               class="btn-sn btn-p">
+                Browse All Products →
+            </a>
         </div>
     </div>
 
+    @* ── Shop by Category ── *@
+    <div class="card-sn mb-18">
+        <div class="ch">
+            <h3><i class="fa-solid fa-th"></i> Shop by Category</h3>
+        </div>
+        <div class="cb">
+            <div class="d-flex gap-3 flex-wrap">
+                @if (ViewBag.Categories != null)
+                {
+                    @foreach (var cat in ViewBag.Categories)
+                    {
+                        <a asp-controller="Home"
+                           asp-action="Products"
+                           asp-route-categoryId="@cat.CategoryId"
+                           style="flex:1;min-width:100px;text-align:center;
+                            padding:16px 8px;border:1.5px solid var(--bdr);
+                            border-radius:10px;cursor:pointer;
+                            transition:all .15s;text-decoration:none;
+                            color:var(--t1)"
+                           onmouseover="this.style.borderColor='var(--blue)';
+                            this.style.background='var(--blue-l)'"
+                           onmouseout="this.style.borderColor='var(--bdr)';
+                            this.style.background=''">
+                            <div style="font-size:28px">@cat.Icon</div>
+                            <div style="font-size:12.5px;font-weight:700;
+                                margin-top:6px">
+                                @cat.CategoryName
+                            </div>
+                        </a>
+                    }
+                }
+            </div>
+        </div>
+    </div>
 
+    @* ── Featured Products ── *@
+    <div style="font-size:15px;font-weight:800;margin-bottom:14px;
+        letter-spacing:-.3px">
+        🔥 Featured Products
+    </div>
+
+    @if (!Model.Any())
+    {
+        <div class="text-center" style="padding:40px;color:var(--t3)">
+            <i class="fa-solid fa-box-open" style="font-size:36px"></i>
+            <div style="margin-top:8px">No products yet</div>
+        </div>
+    }
+    else
+    {
+        <div class="pgrid">
+            @foreach (var p in Model)
+            {
+                <div class="pcard">
+                    <div class="pcard-img">
+                        @if (p.ImageUrl != null &&
+                             p.ImageUrl != "/images/default.png")
+                        {
+                            <img src="@p.ImageUrl"
+                                 style="width:100%;height:100%;
+                            object-fit:cover" />
+                        }
+                        else
+                        {
+                            @p.CategoryIcon
+                        }
+                        @if (p.IsOutOfStock)
+                        {
+                            <span class="pcard-badge"
+                                  style="background:var(--rose)">
+                                OUT OF STOCK
+                            </span>
+                        }
+                    </div>
+                    <div class="pcard-body">
+                        <div class="pcard-name">@p.Name</div>
+                        <div class="pcard-cat">
+                            @p.CategoryIcon @p.CategoryName
+                        </div>
+                        <div class="pcard-foot">
+                            <div>
+                                <span class="pcard-price">
+                                    ₹@p.Price?.ToString("N0")
+                                </span>
+                            </div>
+                            <a asp-controller="Account"
+                               asp-action="Login"
+                               class="pcard-addcart">
+                                Buy Now
+                            </a>
+                        </div>
+                    </div>
+                </div>
+            }
+        </div>
+    }
+
+    @* ── Login CTA ── *@
+    <div class="card-sn mt-4"
+         style="background:linear-gradient(135deg,var(--ink),#1e3a5f);
+        color:#fff;text-align:center;padding:32px">
+        <div style="font-size:20px;font-weight:800;margin-bottom:8px">
+            Ready to Shop? 🛒
+        </div>
+        <div style="font-size:13px;opacity:.7;margin-bottom:20px">
+            Login or create an account to add products to cart
+            and place orders!
+        </div>
+        <div class="d-flex gap-3 justify-content-center">
+            <a asp-controller="Account"
+               asp-action="Login"
+               class="btn-sn btn-p">
+                <i class="fa-solid fa-right-to-bracket"></i> Sign In
+            </a>
+            <a asp-controller="Account"
+               asp-action="Register"
+               class="btn-sn btn-o"
+               style="border-color:rgba(255,255,255,.3);color:black">
+                <i class="fa-solid fa-user-plus"></i> Create Account
+            </a>
+        </div>
+    </div>
+
+</div>

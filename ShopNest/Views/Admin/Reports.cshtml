@@ -1,4 +1,4 @@
-﻿
+﻿@model ShopNest.Models.ViewModels.ReportsViewModel
 @{
     ViewData["Title"] = "Reports";
     Layout = "~/Views/Shared/_Admin.cshtml";
@@ -6,45 +6,168 @@
 
 <div class="cnt page-anim">
 
-    <div class="zpill adm"><i class="fa-solid fa-shield-halved"></i> Admin Zone</div>
+    <div class="zpill adm">
+        <i class="fa-solid fa-shield-halved"></i> Admin Zone
+    </div>
+
     <div class="ph">
-        <div><h1>Reports &amp; Analytics</h1><p>Platform performance summary and business insights.</p></div>
+        <div>
+            <h1>Reports &amp; Analytics</h1>
+            <p>Platform performance summary and business insights.</p>
+        </div>
         <div class="ph-acts">
-            <select class="tsel"><option>March 2026</option><option>February 2026</option><option>Q1 2026</option></select>
-            <button class="btn-sn btn-p"><i class="fa-solid fa-download"></i> Download PDF</button>
+            <button class="btn-sn btn-p">
+                <i class="fa-solid fa-download"></i> Download PDF
+            </button>
         </div>
     </div>
+
+    @* ── Stats Cards ── *@
     <div class="sg mb-18">
-        <div class="sc bl"><div class="sc-top"><div class="sc-ico bl"><i class="fa-solid fa-users"></i></div><div class="sc-tr up"><i class="fa-solid fa-arrow-trend-up"></i>+11%</div></div><div class="sc-val">312</div><div class="sc-lbl">New Users This Month</div></div>
-        <div class="sc gr"><div class="sc-top"><div class="sc-ico gr"><i class="fa-solid fa-receipt"></i></div><div class="sc-tr up"><i class="fa-solid fa-arrow-trend-up"></i>+19%</div></div><div class="sc-val">1,420</div><div class="sc-lbl">Orders This Month</div></div>
-        <div class="sc am"><div class="sc-top"><div class="sc-ico am"><i class="fa-solid fa-indian-rupee-sign"></i></div><div class="sc-tr up"><i class="fa-solid fa-arrow-trend-up"></i>+24%</div></div><div class="sc-val">₹98K</div><div class="sc-lbl">Revenue This Month</div></div>
-        <div class="sc ro"><div class="sc-top"><div class="sc-ico ro"><i class="fa-solid fa-rotate-left"></i></div><div class="sc-tr dn"><i class="fa-solid fa-arrow-trend-down"></i>-1.2%</div></div><div class="sc-val">2.8%</div><div class="sc-lbl">Return Rate</div></div>
+        <div class="sc bl">
+            <div class="sc-top">
+                <div class="sc-ico bl"><i class="fa-solid fa-users"></i></div>
+                <div class="sc-tr up">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                </div>
+            </div>
+            <div class="sc-val">@Model.NewUsersThisMonth</div>
+            <div class="sc-lbl">New Users This Month</div>
+        </div>
+
+        <div class="sc gr">
+            <div class="sc-top">
+                <div class="sc-ico gr">
+                    <i class="fa-solid fa-receipt"></i>
+                </div>
+                <div class="sc-tr up">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                </div>
+            </div>
+            <div class="sc-val">@Model.OrdersThisMonth</div>
+            <div class="sc-lbl">Orders This Month</div>
+        </div>
+
+        <div class="sc am">
+            <div class="sc-top">
+                <div class="sc-ico am">
+                    <i class="fa-solid fa-indian-rupee-sign"></i>
+                </div>
+                <div class="sc-tr up">
+                    <i class="fa-solid fa-arrow-trend-up"></i>
+                </div>
+            </div>
+            <div class="sc-val">₹@Model.RevenueThisMonthK K</div>
+            <div class="sc-lbl">Revenue This Month</div>
+        </div>
+
+        <div class="sc ro">
+            <div class="sc-top">
+                <div class="sc-ico ro">
+                    <i class="fa-solid fa-rotate-left"></i>
+                </div>
+                <div class="sc-tr dn">
+                    <i class="fa-solid fa-arrow-trend-down"></i>
+                </div>
+            </div>
+            <div class="sc-val">@Model.ReturnRate%</div>
+            <div class="sc-lbl">Cancellation Rate</div>
+        </div>
     </div>
+
     <div class="g2">
+
+        @* ── Top Categories ── *@
         <div class="card-sn">
-            <div class="ch"><h3><i class="fa-solid fa-chart-bar"></i> Top Categories by Revenue</h3></div>
+            <div class="ch">
+                <h3>
+                    <i class="fa-solid fa-chart-bar"></i>
+                    Top Categories by Revenue
+                </h3>
+            </div>
             <div class="cb">
-                <div class="prg"><div class="prg-lbl"><span>Electronics</span><span>₹42K</span></div><div class="prg-bg"><div class="prg-fill bl" style="width:72%"></div></div></div>
-                <div class="prg"><div class="prg-lbl"><span>Fashion</span><span>₹28K</span></div><div class="prg-bg"><div class="prg-fill gr" style="width:48%"></div></div></div>
-                <div class="prg"><div class="prg-lbl"><span>Home &amp; Living</span><span>₹14K</span></div><div class="prg-bg"><div class="prg-fill am" style="width:24%"></div></div></div>
-                <div class="prg"><div class="prg-lbl"><span>Beauty</span><span>₹8K</span></div><div class="prg-bg"><div class="prg-fill vi" style="width:14%"></div></div></div>
-                <div class="prg"><div class="prg-lbl"><span>Sports</span><span>₹6K</span></div><div class="prg-bg"><div class="prg-fill ro" style="width:10%"></div></div></div>
+                @if (!Model.CategoryRevenue.Any())
+                {
+                    <div class="text-center"
+                         style="padding:30px;color:var(--t3)">
+                        <i class="fa-solid fa-chart-bar"
+                           style="font-size:24px"></i>
+                        <div>No data yet</div>
+                    </div>
+                }
+                else
+                {
+                    string[] fills = { "bl", "gr", "am", "vi", "ro" };
+                    int idx = 0;
+                    @foreach (var cat in Model.CategoryRevenue)
+                    {
+                        <div class="prg">
+                            <div class="prg-lbl">
+                                <span>@cat.Icon @cat.CategoryName</span>
+                                <span>₹@cat.RevenueK K</span>
+                            </div>
+                            <div class="prg-bg">
+                                <div class="prg-fill @fills[idx % fills.Length]"
+                                     style="width:@cat.Percentage%">
+                                </div>
+                            </div>
+                        </div>
+                        idx++;
+                    }
+                }
             </div>
         </div>
+
+        @* ── Top Products ── *@
         <div class="card-sn">
-            <div class="ch"><h3><i class="fa-solid fa-star"></i> Top Products</h3></div>
+            <div class="ch">
+                <h3><i class="fa-solid fa-star"></i> Top Products</h3>
+            </div>
             <div class="table-responsive">
                 <table class="dt">
-                    <thead><tr><th>Product</th><th>Sales</th><th>Revenue</th></tr></thead>
+                    <thead>
+                        <tr>
+                            <th>Product</th>
+                            <th>Sales</th>
+                            <th>Revenue</th>
+                        </tr>
+                    </thead>
                     <tbody>
-                        <tr><td>📱 iPhone 15 Pro Max</td><td>428</td><td><span style="font-family:var(--mono)">₹55.6K</span></td></tr>
-                        <tr><td>💻 MacBook Air M3</td><td>312</td><td><span style="font-family:var(--mono)">₹35.8K</span></td></tr>
-                        <tr><td>👟 Nike Air Max 270</td><td>1,204</td><td><span style="font-family:var(--mono)">₹15.6K</span></td></tr>
-                        <tr><td>🛋️ L-Shape Sofa</td><td>87</td><td><span style="font-family:var(--mono)">₹3.6K</span></td></tr>
+                        @if (!Model.TopProducts.Any())
+                        {
+                            <tr>
+                                <td colspan="3"
+                                    class="text-center"
+                                    style="padding:30px;color:var(--t3)">
+                                    No data yet
+                                </td>
+                            </tr>
+                        }
+                        else
+                        {
+                            @foreach (var p in Model.TopProducts)
+                            {
+                                <tr>
+                                    <td>@p.Icon @p.Name</td>
+                                    <td>
+                                        <span style="font-family:var(--mono);
+                                            font-weight:700">
+                                            @p.TotalSales
+                                        </span>
+                                    </td>
+                                    <td>
+                                        <span style="font-family:var(--mono);
+                                            font-weight:700">
+                                            ₹@p.RevenueK K
+                                        </span>
+                                    </td>
+                                </tr>
+                            }
+                        }
                     </tbody>
                 </table>
             </div>
         </div>
+
     </div>
 </div>
-

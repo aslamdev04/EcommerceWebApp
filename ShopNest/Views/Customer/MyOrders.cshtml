@@ -1,27 +1,220 @@
-﻿
+﻿@model List<ShopNest.Models.ViewModels.MyOrderViewModel>
 @{
     ViewData["Title"] = "MyOrders";
     Layout = "~/Views/Shared/_Customer.cshtml";
+    string selected = ViewBag.SelectedStatus ?? "All";
 }
 
 <div class="cnt page-anim">
 
-    <div class="zpill cus"><i class="fa-solid fa-user-circle"></i> Customer Zone</div>
-    <div class="ph"><div><h1>My Orders</h1><p>View and manage all your orders.</p></div></div>
+    <div class="zpill cus">
+        <i class="fa-solid fa-user-circle"></i> Customer Zone
+    </div>
+
+    <div class="ph">
+        <div>
+            <h1>My Orders</h1>
+            <p>View and manage all your orders.</p>
+        </div>
+    </div>
+
+    @* Messages *@
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success mb-3"
+             style="border-radius:10px;font-size:13px">
+            <i class="fa-solid fa-circle-check"></i> @TempData["Success"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger mb-3"
+             style="border-radius:10px;font-size:13px">
+            <i class="fa-solid fa-circle-exclamation"></i> @TempData["Error"]
+        </div>
+    }
+
     <div class="card-sn">
-        <div class="tabr"><button class="tabb on">All (14)</button><button class="tabb">Processing</button><button class="tabb">Shipped</button><button class="tabb">Delivered</button><button class="tabb">Cancelled</button></div>
-        <div class="tf"><div class="ts"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Search orders…" /></div></div>
+
+        @* ── Status Tabs ── *@
+        <div class="tabr">
+            <a asp-action="MyOrders" asp-route-status="All"
+               class="tabb @(selected == "All" ? "on" : "")">
+                All (@ViewBag.AllCount)
+            </a>
+            <a asp-action="MyOrders" asp-route-status="Processing"
+               class="tabb @(selected == "Processing" ? "on" : "")">
+                Processing (@ViewBag.ProcessingCount)
+            </a>
+            <a asp-action="MyOrders" asp-route-status="Shipped"
+               class="tabb @(selected == "Shipped" ? "on" : "")">
+                Shipped (@ViewBag.ShippedCount)
+            </a>
+            <a asp-action="MyOrders" asp-route-status="Delivered"
+               class="tabb @(selected == "Delivered" ? "on" : "")">
+                Delivered (@ViewBag.DeliveredCount)
+            </a>
+            <a asp-action="MyOrders" asp-route-status="Cancelled"
+               class="tabb @(selected == "Cancelled" ? "on" : "")">
+                Cancelled (@ViewBag.CancelledCount)
+            </a>
+        </div>
+
+        @* ── Search Bar ── *@
+        <div class="tf">
+            <div class="ts">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text"
+                       id="orderSearch"
+                       placeholder="Search orders…"
+                       onkeyup="searchOrders()" />
+            </div>
+        </div>
+
+        @* ── Table ── *@
         <div class="table-responsive">
-            <table class="dt">
-                <thead><tr><th>Order ID</th><th>Products</th><th>Date</th><th>Amount</th><th>Status</th><th>Actions</th></tr></thead>
+            <table class="dt" id="ordersTable">
+                <thead>
+                    <tr>
+                        <th>Order ID</th>
+                        <th>Products</th>
+                        <th>Date</th>
+                        <th>Amount</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
                 <tbody>
-                    <tr><td style="font-family:var(--mono);color:var(--blue);font-weight:700">#ORD-8821</td><td>📱 iPhone 15 Pro + 2 more</td><td>Mar 16, 2026</td><td><span style="font-family:var(--mono);font-weight:700">₹18,450</span></td><td><span class="bdg bdg-delivered">Delivered</span></td><td><div class="d-flex gap-1"><a href="order-track.html" class="btn-sn btn-o btn-xs"><i class="fa-solid fa-eye"></i> View</a><button class="btn-sn btn-o btn-xs"><i class="fa-solid fa-rotate-left"></i> Return</button></div></td></tr>
-                    <tr><td style="font-family:var(--mono);color:var(--blue);font-weight:700">#ORD-8814</td><td>👟 Nike Air Max + 4 more</td><td>Mar 14, 2026</td><td><span style="font-family:var(--mono);font-weight:700">₹7,230</span></td><td><span class="bdg bdg-shipped">Shipped</span></td><td><div class="d-flex gap-1"><a href="order-track.html" class="btn-sn btn-o btn-xs"><i class="fa-solid fa-route"></i> Track</a><button class="btn-sn btn-o btn-xs" style="border-color:var(--rose);color:var(--rose)"><i class="fa-solid fa-xmark"></i> Cancel</button></div></td></tr>
-                    <tr><td style="font-family:var(--mono);color:var(--blue);font-weight:700">#ORD-8801</td><td>🛋️ L-Shape Sofa Set</td><td>Mar 12, 2026</td><td><span style="font-family:var(--mono);font-weight:700">₹42,000</span></td><td><span class="bdg bdg-processing">Processing</span></td><td><div class="d-flex gap-1"><button class="btn-sn btn-o btn-xs"><i class="fa-solid fa-eye"></i> View</button></div></td></tr>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="6"
+                                class="text-center"
+                                style="padding:40px;color:var(--t3)">
+                                <i class="fa-solid fa-box-open"
+                                   style="font-size:32px;margin-bottom:8px"></i>
+                                <div>No orders found</div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var order in Model)
+                        {
+                            <tr>
+                                @* Order ID *@
+                                <td style="font-family:var(--mono);
+                                    color:var(--blue);font-weight:700">
+                                    #ORD-@order.OrderId.ToString("D4")
+                                </td>
+
+                                @* Products *@
+                                <td>@order.ProductSummary</td>
+
+                                @* Date *@
+                                <td style="font-size:12.5px;color:var(--t3)">
+                                    @order.FormattedDate
+                                </td>
+
+                                @* Amount *@
+                                <td>
+                                    <span style="font-family:var(--mono);
+                                        font-weight:700">
+                                        ₹@order.TotalAmount.ToString("N0")
+                                    </span>
+                                </td>
+
+                                @* Status *@
+                                <td>
+                                    <span class="bdg @order.StatusBadgeClass">
+                                        @order.Status
+                                    </span>
+                                </td>
+
+                                @* Actions *@
+                                <td>
+                                    <div class="d-flex gap-1">
+
+                                        @* View Button — Sab ke liye *@
+                                        <a asp-controller="Customer"
+                                           asp-action="OrderDetail"
+                                           asp-route-id="@order.OrderId"
+                                           class="btn-sn btn-o btn-xs">
+                                            <i class="fa-solid fa-eye"></i> View
+                                        </a>
+
+                                        @* Cancel — Sirf Pending/Processing *@
+                                        @if (order.Status == "Pending" ||
+                                             order.Status == "Processing")
+                                        {
+                                            <form asp-controller="Customer"
+                                                  asp-action="CancelOrder"
+                                                  method="post"
+                                                  style="display:inline"
+                                                  onsubmit="return confirm(
+                                                'Cancel order #ORD-@order.OrderId?')">
+                                                @Html.AntiForgeryToken()
+                                                <input type="hidden"
+                                                       name="orderId"
+                                                       value="@order.OrderId" />
+                                                <button type="submit"
+                                                        class="btn-sn btn-o btn-xs"
+                                                        style="border-color:var(--rose);
+                                                    color:var(--rose)">
+                                                    <i class="fa-solid fa-xmark"></i>
+                                                    Cancel
+                                                </button>
+                                            </form>
+                                        }
+
+                                        @* Return — Sirf Delivered *@
+                                        @if (order.Status == "Delivered")
+                                        {
+                                            <button class="btn-sn btn-o btn-xs">
+                                                <i class="fa-solid fa-rotate-left"></i>
+                                                Return
+                                            </button>
+                                        }
+
+                                        @* Track — Sirf Shipped *@
+                                        @if (order.Status == "Shipped")
+                                        {
+                                            <button class="btn-sn btn-o btn-xs">
+                                                <i class="fa-solid fa-route"></i>
+                                                Track
+                                            </button>
+                                        }
+
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
                 </tbody>
             </table>
         </div>
-        <div class="pgn"><div class="pgn-info">Showing 1–3 of 14 orders</div><div class="pgn-btns"><button class="pb on">1</button><button class="pb">2</button><button class="pb">3</button></div></div>
+
+        @* Pagination Info *@
+        <div class="pgn">
+            <div class="pgn-info">
+                Showing @Model.Count order(s)
+            </div>
+        </div>
+
     </div>
 </div>
 
+@section Scripts {
+    <script>
+        function searchOrders() {
+            var input = document.getElementById('orderSearch')
+                                .value.toLowerCase();
+            var rows  = document.querySelectorAll('#ordersTable tbody tr');
+
+            rows.forEach(function (row) {
+                var text = row.innerText.toLowerCase();
+                row.style.display = text.includes(input) ? '' : 'none';
+            });
+        }
+    </script>
+}

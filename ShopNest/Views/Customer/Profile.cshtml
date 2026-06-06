@@ -1,4 +1,4 @@
-﻿
+﻿@model ShopNest.Models.ViewModels.ProfileViewModel
 @{
     ViewData["Title"] = "Profile";
     Layout = "~/Views/Shared/_Customer.cshtml";
@@ -6,42 +6,280 @@
 
 <div class="cnt page-anim">
 
-    <div class="zpill cus"><i class="fa-solid fa-user-circle"></i> Customer Zone</div>
-    <div class="ph"><div><h1>My Profile</h1><p>Manage your personal information and preferences.</p></div><div class="ph-acts"><button class="btn-sn btn-p"><i class="fa-solid fa-floppy-disk"></i> Save Changes</button></div></div>
+    <div class="zpill cus">
+        <i class="fa-solid fa-user-circle"></i> Customer Zone
+    </div>
+
+    <div class="ph">
+        <div>
+            <h1>My Profile</h1>
+            <p>Manage your personal information and preferences.</p>
+        </div>
+        <div class="ph-acts">
+            <button type="submit"
+                    form="profileForm"
+                    class="btn-sn btn-p">
+                <i class="fa-solid fa-floppy-disk"></i> Save Changes
+            </button>
+        </div>
+    </div>
+
+    @* Messages *@
+    @if (TempData["UpdateSuccess"] != null)
+    {
+        <div class="alert alert-success mb-3"
+             style="border-radius:10px;font-size:13px">
+            <i class="fa-solid fa-circle-check"></i> @TempData["UpdateSuccess"]
+        </div>
+    }
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success mb-3"
+             style="border-radius:10px;font-size:13px">
+            <i class="fa-solid fa-circle-check"></i> @TempData["Success"]
+        </div>
+    }
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger mb-3"
+             style="border-radius:10px;font-size:13px">
+            <i class="fa-solid fa-circle-cross"></i> @TempData["Error"]
+        </div>
+    }
+
     <div class="g3r">
+
+        @* ── Left Side ── *@
         <div class="d-flex flex-column gap-3">
+
+            @* Profile Card *@
             <div class="card-sn">
                 <div class="cb text-center">
-                    <div style="width:72px;height:72px;border-radius:50%;background:linear-gradient(135deg,var(--blue),var(--cyan));margin:0 auto 12px;display:flex;align-items:center;justify-content:center;font-size:26px;font-weight:800;color:#fff">PS</div>
-                    <div style="font-size:16px;font-weight:800">Priya Sharma</div>
-                    <div style="font-size:12.5px;color:var(--t3)">priya@gmail.com</div>
-                    <div class="d-flex justify-content-around mt-3 pt-3" style="border-top:1px solid var(--bdr)">
-                        <div><div style="font-size:16px;font-weight:800;font-family:var(--mono)">14</div><div style="font-size:11px;color:var(--t3)">Orders</div></div>
-                        <div><div style="font-size:16px;font-weight:800;font-family:var(--mono)">24</div><div style="font-size:11px;color:var(--t3)">Wishlist</div></div>
-                        <div><div style="font-size:16px;font-weight:800;font-family:var(--mono)">₹28K</div><div style="font-size:11px;color:var(--t3)">Spent</div></div>
+
+                    @* Avatar *@
+                    <div style="width:72px;height:72px;border-radius:50%;
+                        background:linear-gradient(135deg,var(--blue),var(--cyan));
+                        margin:0 auto 12px;display:flex;align-items:center;
+                        justify-content:center;font-size:26px;
+                        font-weight:800;color:#fff">
+                        @Model.Initials
+                    </div>
+
+                    @* Name + Email *@
+                    <div style="font-size:16px;font-weight:800">
+                        @Model.Name
+                    </div>
+                    <div style="font-size:12.5px;color:var(--t3)">
+                        @Model.Email
+                    </div>
+
+                    @* Stats *@
+                    <div class="d-flex justify-content-around mt-3 pt-3"
+                         style="border-top:1px solid var(--bdr)">
+                        <div>
+                            <div style="font-size:16px;font-weight:800;
+                                font-family:var(--mono)">
+                                @Model.TotalOrders
+                            </div>
+                            <div style="font-size:11px;color:var(--t3)">
+                                Orders
+                            </div>
+                        </div>
+                        <div>
+                            <div style="font-size:16px;font-weight:800;
+                                font-family:var(--mono)">
+                                ₹@((Model.TotalSpent / 1000).ToString("0"))K
+                            </div>
+                            <div style="font-size:11px;color:var(--t3)">
+                                Spent
+                            </div>
+                        </div>
                     </div>
                 </div>
             </div>
+
+            @* Account Security *@
             <div class="card-sn">
-                <div class="ch"><h3><i class="fa-solid fa-shield-halved"></i> Account Security</h3></div>
+                <div class="ch">
+                    <h3>
+                        <i class="fa-solid fa-shield-halved"></i>
+                        Account Security
+                    </h3>
+                </div>
                 <div class="cb d-flex flex-column gap-2">
-                    <button class="btn-sn btn-o justify-content-start"><i class="fa-solid fa-lock"></i> Change Password</button>
-                    <button class="btn-sn btn-o justify-content-start"><i class="fa-solid fa-mobile-screen"></i> Enable 2FA</button>
-                    <button class="btn-sn btn-o justify-content-start" style="border-color:var(--rose);color:var(--rose)"><i class="fa-solid fa-trash"></i> Delete Account</button>
+                    <button class="btn-sn btn-o justify-content-start"
+                            data-bs-toggle="modal"
+                            data-bs-target="#changePasswordModal">
+                        <i class="fa-solid fa-lock"></i> Change Password
+                    </button>
+                    <button class="btn-sn btn-o justify-content-start"
+                            style="border-color:var(--rose);color:var(--rose)"
+                            onclick="return confirm('Are you sure you want to delete your account?')">
+                        <i class="fa-solid fa-trash"></i> Delete Account
+                    </button>
                 </div>
             </div>
+
         </div>
+
+        @* ── Right Side — Edit Form ── *@
         <div class="card-sn">
-            <div class="ch"><h3><i class="fa-solid fa-pen-to-square"></i> Edit Profile</h3></div>
+            <div class="ch">
+                <h3><i class="fa-solid fa-pen-to-square"></i> Edit Profile</h3>
+            </div>
             <div class="cb">
-                <div class="row g-3 mb-3"><div class="col-6"><label class="flbl">First Name</label><input type="text" class="finp" value="Priya" /></div><div class="col-6"><label class="flbl">Last Name</label><input type="text" class="finp" value="Sharma" /></div></div>
-                <div class="fgrp"><label class="flbl">Email Address</label><input type="email" class="finp" value="priya@gmail.com" /></div>
-                <div class="fgrp"><label class="flbl">Phone Number</label><input type="tel" class="finp" value="98765 43210" /></div>
-                <div class="fgrp"><label class="flbl">Date of Birth</label><input type="date" class="finp" /></div>
-                <div class="fgrp"><label class="flbl">Gender</label><select class="tsel w-100"><option>Female</option><option>Male</option><option>Other</option></select></div>
-                <div class="fgrp"><label class="flbl">Default Address</label><textarea rows="3" class="finp" style="resize:vertical">Flat 4B, Sunflower Apartments, Andheri West, Mumbai — 400058</textarea></div>
+                <form asp-controller="Customer"
+                      asp-action="Profile"
+                      method="post"
+                      id="profileForm">
+
+                    @Html.AntiForgeryToken()
+
+                    @if (!ViewData.ModelState.IsValid)
+                    {
+                        <div class="alert alert-danger"
+                             style="font-size:13px;border-radius:10px">
+                            @Html.ValidationSummary(false)
+                        </div>
+                    }
+
+                    @* Name *@
+                    <div class="fgrp">
+                        <label class="flbl">Full Name</label>
+                        <input asp-for="Name"
+                               class="finp"
+                               placeholder="Your full name" />
+                        <span asp-validation-for="Name"
+                              class="text-danger"
+                              style="font-size:11px"></span>
+                    </div>
+
+                    @* Email *@
+                    <div class="fgrp">
+                        <label class="flbl">Email Address</label>
+                        <input asp-for="Email"
+                               type="email"
+                               class="finp"
+                               placeholder="yourname@email.com" />
+                        <span asp-validation-for="Email"
+                              class="text-danger"
+                              style="font-size:11px"></span>
+                    </div>
+
+                    @* Phone *@
+                    <div class="fgrp">
+                        <label class="flbl">Phone Number</label>
+                        <input asp-for="Phone"
+                               type="tel"
+                               class="finp"
+                               placeholder="98765 43210" />
+                    </div>
+
+                    @* Address *@
+                    <div class="fgrp">
+                        <label class="flbl">Address</label>
+                        <textarea asp-for="Address"
+                                  rows="2"
+                                  class="finp"
+                                  style="resize:none"
+                                  placeholder="Flat/House No, Street, Area">
+                        </textarea>
+                    </div>
+
+                    @* City + Pincode *@
+                    <div class="row g-3">
+                        <div class="col-md-6">
+                            <label class="flbl">City</label>
+                            <input asp-for="City"
+                                   class="finp"
+                                   placeholder="Mumbai" />
+                        </div>
+                        <div class="col-md-6">
+                            <label class="flbl">Pincode</label>
+                            <input asp-for="Pincode"
+                                   class="finp"
+                                   placeholder="400058" />
+                        </div>
+                    </div>
+
+                </form>
             </div>
         </div>
+
     </div>
 </div>
 
+@* ── Change Password Modal ── *@
+<div class="modal fade" id="changePasswordModal" tabindex="-1">
+    <div class="modal-dialog modal-dialog-centered">
+        <div class="modal-content"
+             style="border-radius:16px;border:1px solid var(--bdr)">
+
+            <div class="modal-header"
+                 style="padding:20px 24px 16px;border-bottom:1px solid var(--bdr)">
+                <div class="d-flex align-items-center gap-3">
+                    <div style="width:40px;height:40px;border-radius:10px;
+                        background:linear-gradient(135deg,var(--blue),var(--cyan));
+                        display:flex;align-items:center;
+                        justify-content:center;font-size:16px;color:#fff">
+                        <i class="fa-solid fa-lock"></i>
+                    </div>
+                    <h5 style="margin:0;font-size:16px;font-weight:700">
+                        Change Password
+                    </h5>
+                </div>
+                <button type="button"
+                        class="btn-close"
+                        data-bs-dismiss="modal"></button>
+            </div>
+
+            <div class="modal-body" style="padding:24px">
+                <form asp-controller="Customer"
+                      asp-action="ChangePassword"
+                      method="post"
+                      id="changePasswordForm">
+
+                    @Html.AntiForgeryToken()
+
+                    <div class="fgrp">
+                        <label class="flbl">Current Password</label>
+                        <input type="password"
+                               name="CurrentPassword"
+                               class="finp"
+                               placeholder="Enter current password" />
+                    </div>
+                    <div class="fgrp">
+                        <label class="flbl">New Password</label>
+                        <input type="password"
+                               name="NewPassword"
+                               class="finp"
+                               placeholder="Enter new password" />
+                    </div>
+                    <div class="fgrp">
+                        <label class="flbl">Confirm New Password</label>
+                        <input type="password"
+                               name="ConfirmPassword"
+                               class="finp"
+                               placeholder="Repeat new password" />
+                    </div>
+
+                </form>
+            </div>
+
+            <div class="modal-footer"
+                 style="padding:16px 24px;border-top:1px solid var(--bdr)">
+                <button type="button"
+                        class="btn-sn btn-o"
+                        data-bs-dismiss="modal">
+                    Cancel
+                </button>
+                <button type="submit"
+                        form="changePasswordForm"
+                        class="btn-sn btn-p">
+                    <i class="fa-solid fa-lock"></i> Update Password
+                </button>
+            </div>
+
+        </div>
+    </div>
+</div>

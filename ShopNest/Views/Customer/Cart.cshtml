@@ -1,4 +1,4 @@
-﻿
+﻿@model ShopNest.Models.ViewModels.CartViewModel
 @{
     ViewData["Title"] = "Cart";
     Layout = "~/Views/Shared/_Customer.cshtml";
@@ -6,42 +6,239 @@
 
 <div class="cnt page-anim">
 
-    <div class="zpill cus"><i class="fa-solid fa-user-circle"></i> Customer Zone</div>
-    <div class="ph"><div><h1>Shopping Cart</h1><p>4 items in your cart</p></div></div>
-    <div class="g3r">
+    <div class="zpill cus">
+        <i class="fa-solid fa-user-circle"></i> Customer Zone
+    </div>
+
+    <div class="ph">
         <div>
-            <div class="card-sn mb-18">
-                <div class="ch"><h3><i class="fa-solid fa-cart-shopping"></i> Cart Items</h3></div>
-                <div class="cb">
-                    <div class="cart-item"><div class="cart-thumb">📱</div><div style="flex:1"><div class="cart-name">iPhone 15 Pro Max</div><div class="cart-meta">256GB · Natural Titanium</div><div class="cart-qty"><button class="qty-btn"><i class="fa-solid fa-minus"></i></button><span class="qty-val">1</span><button class="qty-btn"><i class="fa-solid fa-plus"></i></button></div></div><div class="cart-price">₹1,24,900</div></div>
-                    <div class="cart-item"><div class="cart-thumb" style="background:#d1fae5">👟</div><div style="flex:1"><div class="cart-name">Nike Air Max 270</div><div class="cart-meta">Size 10 · White/Black</div><div class="cart-qty"><button class="qty-btn"><i class="fa-solid fa-minus"></i></button><span class="qty-val">2</span><button class="qty-btn"><i class="fa-solid fa-plus"></i></button></div></div><div class="cart-price">₹25,990</div></div>
-                    <div class="cart-item"><div class="cart-thumb" style="background:#fef3c7">⌚</div><div style="flex:1"><div class="cart-name">Apple Watch Series 9</div><div class="cart-meta">45mm · Midnight</div><div class="cart-qty"><button class="qty-btn"><i class="fa-solid fa-minus"></i></button><span class="qty-val">1</span><button class="qty-btn"><i class="fa-solid fa-plus"></i></button></div></div><div class="cart-price">₹41,900</div></div>
-                </div>
-            </div>
-            <div class="card-sn">
-                <div class="ch"><h3><i class="fa-solid fa-tag"></i> Apply Coupon</h3></div>
-                <div class="cb d-flex gap-2"><input type="text" class="finp" placeholder="Enter coupon code…" style="flex:1" /><button class="btn-sn btn-p">Apply</button></div>
-            </div>
-        </div>
-        <div class="card-sn">
-            <div class="ch"><h3><i class="fa-solid fa-receipt"></i> Order Summary</h3></div>
-            <div class="cb">
-                <div class="order-sum">
-                    <div class="os-row"><span>Subtotal (4 items)</span><span>₹1,92,790</span></div>
-                    <div class="os-row"><span>Discount (SUMMER25)</span><span style="color:var(--emerald)">-₹48,197</span></div>
-                    <div class="os-row"><span>Delivery Charges</span><span style="color:var(--emerald)">FREE</span></div>
-                    <div class="os-row"><span>GST (18%)</span><span>₹25,994</span></div>
-                    <div class="os-row" style="padding-top:10px;border-top:2px solid var(--bdr)"><span>Total Amount</span><span style="color:var(--blue)">₹1,70,587</span></div>
-                </div>
-                <a href="checkout.html" class="btn-sn btn-p w-100 justify-content-center mt-3"><i class="fa-solid fa-bag-shopping"></i> Proceed to Checkout</a>
-                <a href="browse.html" class="btn-sn btn-o w-100 justify-content-center mt-2"><i class="fa-solid fa-arrow-left"></i> Continue Shopping</a>
-            </div>
-            <div class="d-flex justify-content-center gap-3 mt-3 flex-wrap px-3 pb-3">
-                <span style="font-size:11.5px;color:var(--t3);display:flex;align-items:center;gap:5px"><i class="fa-solid fa-shield-halved" style="color:var(--emerald)"></i> Secure Checkout</span>
-                <span style="font-size:11.5px;color:var(--t3);display:flex;align-items:center;gap:5px"><i class="fa-solid fa-rotate-left" style="color:var(--blue)"></i> Easy Returns</span>
-                <span style="font-size:11.5px;color:var(--t3);display:flex;align-items:center;gap:5px"><i class="fa-solid fa-truck" style="color:var(--amber)"></i> Free Delivery</span>
-            </div>
+            <h1>Shopping Cart</h1>
+            <p>@Model.TotalItems item(s) in your cart</p>
         </div>
     </div>
-</div>
 
+    @* Messages *@
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success mb-3"
+             style="border-radius:10px;font-size:13px">
+            <i class="fa-solid fa-circle-check"></i> @TempData["Success"]
+        </div>
+    }
+
+    @if (!Model.Items.Any())
+    {
+        @* Empty Cart *@
+        <div class="card-sn text-center" style="padding:60px">
+            <i class="fa-solid fa-cart-shopping"
+               style="font-size:48px;color:var(--t3);margin-bottom:16px"></i>
+            <div style="font-size:16px;font-weight:600">Your cart is empty!</div>
+            <div style="font-size:13px;color:var(--t3);margin:8px 0 20px">
+                Add some products to get started
+            </div>
+            <a asp-controller="Customer"
+               asp-action="Browse"
+               class="btn-sn btn-p">
+                <i class="fa-solid fa-shop"></i> Shop Now
+            </a>
+        </div>
+    }
+    else
+    {
+        <div class="g3r">
+
+            @* ── Left Side ── *@
+            <div>
+                <div class="card-sn mb-18">
+                    <div class="ch">
+                        <h3><i class="fa-solid fa-cart-shopping"></i> Cart Items</h3>
+                    </div>
+                    <div class="cb">
+                        @foreach (var item in Model.Items)
+                        {
+                            <div class="cart-item">
+
+                                @* Product Icon *@
+                                <div class="cart-thumb">
+                                    @item.CategoryIcon
+                                </div>
+
+                                @* Product Info *@
+                                <div style="flex:1">
+                                    <div class="cart-name">@item.ProductName</div>
+                                    <div class="cart-meta">
+                                        ₹@item.UnitPrice.ToString("N0") each
+                                    </div>
+
+                                    @* Quantity Controls *@
+                                    <div class="cart-qty">
+
+                                        @* Decrease *@
+                                        <form asp-controller="Customer"
+                                              asp-action="UpdateCart"
+                                              method="post"
+                                              style="display:inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden"
+                                                   name="cartId"
+                                                   value="@item.CartId" />
+                                            <input type="hidden"
+                                                   name="action"
+                                                   value="decrease" />
+                                            <button type="submit"
+                                                    class="qty-btn">
+                                                <i class="fa-solid fa-minus"></i>
+                                            </button>
+                                        </form>
+
+                                        <span class="qty-val">@item.Quantity</span>
+
+                                        @* Increase *@
+                                        <form asp-controller="Customer"
+                                              asp-action="UpdateCart"
+                                              method="post"
+                                              style="display:inline">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden"
+                                                   name="cartId"
+                                                   value="@item.CartId" />
+                                            <input type="hidden"
+                                                   name="action"
+                                                   value="increase" />
+                                            <button type="submit"
+                                                    class="qty-btn"
+                                                @(item.Quantity >= item.Stock
+                                                        ? "disabled" : "")>
+                                                <i class="fa-solid fa-plus"></i>
+                                            </button>
+                                        </form>
+
+                                        @* Remove *@
+                                        <form asp-controller="Customer"
+                                              asp-action="RemoveFromCart"
+                                              method="post"
+                                              style="display:inline"
+                                              onsubmit="return confirm('Remove item?')">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden"
+                                                   name="cartId"
+                                                   value="@item.CartId" />
+                                            <button type="submit"
+                                                    class="qty-btn"
+                                                    style="color:var(--rose)">
+                                                <i class="fa-solid fa-trash"></i>
+                                            </button>
+                                        </form>
+
+                                    </div>
+                                </div>
+
+                                @* Item Total Price *@
+                                <div class="cart-price">
+                                    ₹@item.TotalPrice.ToString("N0")
+                                </div>
+
+                            </div>
+                        }
+                    </div>
+                </div>
+
+                @* Coupon *@
+                <div class="card-sn">
+                    <div class="ch">
+                        <h3><i class="fa-solid fa-tag"></i> Apply Coupon</h3>
+                    </div>
+                    <div class="cb d-flex gap-2">
+                        <input type="text"
+                               class="finp"
+                               placeholder="Enter coupon code…"
+                               style="flex:1" />
+                        <button class="btn-sn btn-p">Apply</button>
+                    </div>
+                </div>
+            </div>
+
+            @* ── Right Side — Order Summary ── *@
+            <div class="card-sn">
+                <div class="ch">
+                    <h3><i class="fa-solid fa-receipt"></i> Order Summary</h3>
+                </div>
+                <div class="cb">
+                    <div class="order-sum">
+
+                        @* Subtotal *@
+                        <div class="os-row">
+                            <span>Subtotal (@Model.TotalItems items)</span>
+                            <span>₹@Model.Subtotal.ToString("N0")</span>
+                        </div>
+
+                        @* Delivery *@
+                        <div class="os-row">
+                            <span>Delivery Charges</span>
+                            <span style="color:var(--emerald)">FREE</span>
+                        </div>
+
+                        @* GST *@
+                        <div class="os-row">
+                            <span>GST (18%)</span>
+                            <span>₹@Model.GST.ToString("N0")</span>
+                        </div>
+
+                        @* Total *@
+                        <div class="os-row"
+                             style="padding-top:10px;
+                            border-top:2px solid var(--bdr)">
+                            <span>Total Amount</span>
+                            <span style="color:var(--blue);font-weight:700">
+                                ₹@Model.Total.ToString("N0")
+                            </span>
+                        </div>
+
+                    </div>
+
+                    @* Checkout Button *@
+                    <a asp-controller="Customer"
+                       asp-action="Checkout"
+                       class="btn-sn btn-p w-100 justify-content-center mt-3">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                        Proceed to Checkout
+                    </a>
+
+                    @* Continue Shopping *@
+                    <a asp-controller="Customer"
+                       asp-action="Browse"
+                       class="btn-sn btn-o w-100 justify-content-center mt-2">
+                        <i class="fa-solid fa-arrow-left"></i>
+                        Continue Shopping
+                    </a>
+
+                </div>
+
+                @* Trust Badges *@
+                <div class="d-flex justify-content-center gap-3 mt-3
+                    flex-wrap px-3 pb-3">
+                    <span style="font-size:11.5px;color:var(--t3);
+                        display:flex;align-items:center;gap:5px">
+                        <i class="fa-solid fa-shield-halved"
+                           style="color:var(--emerald)"></i>
+                        Secure Checkout
+                    </span>
+                    <span style="font-size:11.5px;color:var(--t3);
+                        display:flex;align-items:center;gap:5px">
+                        <i class="fa-solid fa-rotate-left"
+                           style="color:var(--blue)"></i>
+                        Easy Returns
+                    </span>
+                    <span style="font-size:11.5px;color:var(--t3);
+                        display:flex;align-items:center;gap:5px">
+                        <i class="fa-solid fa-truck"
+                           style="color:var(--amber)"></i>
+                        Free Delivery
+                    </span>
+                </div>
+            </div>
+
+        </div>
+    }
+
+</div>

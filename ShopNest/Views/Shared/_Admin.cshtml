@@ -23,9 +23,28 @@
         <div class="sb-zone">
             <span class="sb-zone-lbl">Portal Zone</span>
             <div class="sb-zone-row">
-                <a asp-controller="admin" asp-action="Index" class="zb on" style="text-decoration:none">Admin</a>
-                <a asp-controller="customer" asp-action="Index" class="zb" style="text-decoration:none">Customer</a>
-                <a asp-controller="Home" asp-action="Index" class="zb" style="text-decoration:none">General</a>
+
+                @* Admin always on kyunki yeh Admin layout hai *@
+                <a asp-controller="Admin"
+                   asp-action="Index"
+                   class="zb on"
+                   style="text-decoration:none">Admin</a>
+
+                @* Sirf agar User role bhi hai *@
+                @if (User.IsInRole("User"))
+                {
+                    <a asp-controller="Customer"
+                       asp-action="Index"
+                       class="zb"
+                       style="text-decoration:none">Customer</a>
+                }
+
+                @* General hamesha *@
+                <a asp-controller="Home"
+                   asp-action="Index"
+                   class="zb"
+                   style="text-decoration:none">General</a>
+
             </div>
         </div>
         <nav class="sb-nav">
@@ -42,13 +61,26 @@
                 <a asp-controller="admin" asp-action="Reports" class="sb-item"><span class="si"><i class="fa-solid fa-chart-bar"></i></span>Reports</a>
             </div>
         </nav>
-        <div class="sb-foot">
-            <div class="sb-usr">
-                <div class="sb-av">SA</div>
-                <div><div class="sb-uname">Super Admin</div><div class="sb-urole">Administrator</div></div>
-                <i class="fa-solid fa-ellipsis-vertical" style="color:rgba(255,255,255,.25);font-size:12px;margin-left:auto"></i>
-            </div>
+<div class="sb-foot">
+    <div class="sb-usr">
+        <div class="sb-av">
+            @(User.Identity?.Name?.Length > 1
+                ? User.Identity.Name.Substring(0, 2).ToUpper()
+                : "A")
         </div>
+        <div>
+            <div class="sb-uname">@User.Identity?.Name</div>
+            <div class="sb-urole">Administrator</div>
+        </div>
+        <a asp-controller="Account"
+           asp-action="Logout"
+           style="color:rgba(255,255,255,.25);
+            font-size:12px;margin-left:auto"
+           title="Logout">
+            <i class="fa-solid fa-right-from-bracket"></i>
+        </a>
+    </div>
+</div>
     </aside>
     <div class="main">
         <header class="hdr">
@@ -65,8 +97,24 @@
                 <div class="hdr-btn"><i class="fa-solid fa-bell"></i><span class="ndot"></span></div>
                 <div class="hdr-btn"><i class="fa-solid fa-cart-shopping"></i></div>
                 <div class="hdr-btn"><i class="fa-solid fa-gear"></i></div>
-                <div class="hdr-prof"><div class="hdr-pav">SA</div><div><div class="hdr-pname">Admin</div></div><i class="fa-solid fa-chevron-down" style="font-size:10px;color:var(--t3)"></i></div>
+            <div class="hdr-prof">
+                <div class="hdr-pav">
+                    @(User.Identity?.Name?.Length > 1
+                        ? User.Identity.Name.Substring(0, 2).ToUpper()
+                        : "A")
+                </div>
+                <div>
+                    <div class="hdr-pname">
+                        @User.Identity?.Name
+                    </div>
+                    <div style="font-size:10px;color:var(--t3)">
+                        Administrator
+                    </div>
+                </div>
+                <i class="fa-solid fa-chevron-down"
+                   style="font-size:10px;color:var(--t3)"></i>
             </div>
+        </div>
         </header>
         <main role="main">
             @RenderBody()

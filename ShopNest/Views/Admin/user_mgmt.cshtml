@@ -1,39 +1,289 @@
-﻿
+﻿@model List<ShopNest.Models.ViewModels.UserMgmtViewModel>
 @{
-    ViewData["Title"] = "user_mgmt";
+    ViewData["Title"] = "User Management";
     Layout = "~/Views/Shared/_Admin.cshtml";
+    string selectedRole = ViewBag.SelectedRole ?? "All";
+    string selectedStatus = ViewBag.SelectedStatus ?? "All";
 }
 
 <div class="cnt page-anim">
 
-    <div class="zpill adm"><i class="fa-solid fa-shield-halved"></i> Admin Zone</div>
+    <div class="zpill adm">
+        <i class="fa-solid fa-shield-halved"></i> Admin Zone
+    </div>
+
     <div class="ph">
-        <div><h1>User Management</h1><p>View, activate, deactivate and manage all customer accounts.</p></div>
+        <div>
+            <h1>User Management</h1>
+            <p>View, activate, deactivate and manage all customer accounts.</p>
+        </div>
         <div class="ph-acts">
-            <button class="btn-sn btn-o"><i class="fa-solid fa-download"></i> Export CSV</button>
-            <button class="btn-sn btn-p"><i class="fa-solid fa-user-plus"></i> Add User</button>
+            <button class="btn-sn btn-o">
+                <i class="fa-solid fa-download"></i> Export CSV
+            </button>
         </div>
     </div>
-    <div class="card-sn">
-        <div class="tf">
-            <div class="ts"><i class="fa-solid fa-magnifying-glass"></i><input type="text" placeholder="Search users…" /></div>
-            <select class="tsel"><option>All Roles</option><option>Customer</option><option>Admin</option></select>
-            <select class="tsel"><option>All Status</option><option>Active</option><option>Inactive</option><option>Banned</option></select>
-            <button class="btn-sn btn-o btn-sm"><i class="fa-solid fa-filter"></i> Filter</button>
+
+    @* Messages *@
+    @if (TempData["Success"] != null)
+    {
+        <div class="alert alert-success mb-3"
+             style="border-radius:10px;font-size:13px">
+            <i class="fa-solid fa-circle-check"></i> @TempData["Success"]
         </div>
+    }
+
+    <div class="card-sn">
+
+        @* ── Filter Bar ── *@
+        <div class="tf">
+            <div class="ts">
+                <i class="fa-solid fa-magnifying-glass"></i>
+                <input type="text"
+                       id="userSearch"
+                       placeholder="Search users…"
+                       onkeyup="searchUsers()" />
+            </div>
+
+            @* Role Filter *@
+            <form method="get" id="filterForm">
+                <input type="hidden" name="status"
+                       value="@selectedStatus" />
+                <select name="role"
+                        class="tsel"
+                        onchange="document.getElementById('filterForm').submit()">
+                    <option value="All"
+                            selected="@(selectedRole == "All"
+                                                                    ? "selected" : null)">
+                        All Roles
+                    </option>
+                    <option value="User"
+                            selected="@(selectedRole == "User"
+                                                                    ? "selected" : null)">
+                        Customer
+                    </option>
+                </select>
+
+                @* Status Filter *@
+                <select name="status"
+                        class="tsel"
+                        onchange="document.getElementById('filterForm').submit()">
+                    <option value="All"
+                            selected="@(selectedStatus == "All"
+                                                                    ? "selected" : null)">
+                        All Status
+                    </option>
+                    <option value="Active"
+                            selected="@(selectedStatus == "Active"
+                                                                    ? "selected" : null)">
+                        Active
+                    </option>
+                    <option value="Inactive"
+                            selected="@(selectedStatus == "Inactive"
+                                                                    ? "selected" : null)">
+                        Inactive
+                    </option>
+                </select>
+            </form>
+        </div>
+
+        @* ── Table ── *@
         <div class="table-responsive">
-            <table class="dt">
-                <thead><tr><th><input type="checkbox" /></th><th>Customer</th><th>Phone</th><th>Location</th><th>Joined</th><th>Orders</th><th>Spent</th><th>Status</th><th>Actions</th></tr></thead>
+            <table class="dt" id="usersTable">
+                <thead>
+                    <tr>
+                        <th><input type="checkbox" /></th>
+                        <th>Customer</th>
+                        <th>Phone</th>
+                        <th>Location</th>
+                        <th>Joined</th>
+                        <th>Orders</th>
+                        <th>Spent</th>
+                        <th>Status</th>
+                        <th>Actions</th>
+                    </tr>
+                </thead>
                 <tbody>
-                    <tr><td><input type="checkbox" /></td><td><div class="cc"><div class="cav" style="background:var(--blue-l);color:var(--blue)">PS</div><div><div class="cn">Priya Sharma</div><div class="ce">priya@gmail.com</div></div></div></td><td>98765 43210</td><td>Mumbai, MH</td><td>Mar 12, 2026</td><td><span style="font-family:var(--mono);font-weight:700">14</span></td><td><span style="font-family:var(--mono);font-weight:700">₹28,400</span></td><td><span class="bdg bdg-active">Active</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-ban"></i></button></div></td></tr>
-                    <tr><td><input type="checkbox" /></td><td><div class="cc"><div class="cav" style="background:#d1fae5;color:var(--emerald)">AK</div><div><div class="cn">Arjun Kumar</div><div class="ce">arjun@gmail.com</div></div></div></td><td>97812 34567</td><td>Delhi, DL</td><td>Feb 5, 2026</td><td><span style="font-family:var(--mono);font-weight:700">8</span></td><td><span style="font-family:var(--mono);font-weight:700">₹16,200</span></td><td><span class="bdg bdg-active">Active</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-ban"></i></button></div></td></tr>
-                    <tr><td><input type="checkbox" /></td><td><div class="cc"><div class="cav" style="background:#fef3c7;color:var(--amber)">RM</div><div><div class="cn">Riya Menon</div><div class="ce">riya@gmail.com</div></div></div></td><td>96543 21098</td><td>Bangalore, KA</td><td>Jan 18, 2026</td><td><span style="font-family:var(--mono);font-weight:700">21</span></td><td><span style="font-family:var(--mono);font-weight:700">₹52,800</span></td><td><span class="bdg bdg-active">Active</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-ban"></i></button></div></td></tr>
-                    <tr><td><input type="checkbox" /></td><td><div class="cc"><div class="cav" style="background:#ffe4e6;color:var(--rose)">SR</div><div><div class="cn">Sanjay Rao</div><div class="ce">sanjay@gmail.com</div></div></div></td><td>95001 87654</td><td>Chennai, TN</td><td>Dec 2, 2025</td><td><span style="font-family:var(--mono);font-weight:700">3</span></td><td><span style="font-family:var(--mono);font-weight:700">₹4,100</span></td><td><span class="bdg bdg-inactive">Inactive</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-ban"></i></button></div></td></tr>
-                    <tr><td><input type="checkbox" /></td><td><div class="cc"><div class="cav" style="background:#ede9fe;color:var(--violet)">NP</div><div><div class="cn">Nisha Patel</div><div class="ce">nisha@gmail.com</div></div></div></td><td>94321 56789</td><td>Pune, MH</td><td>Nov 14, 2025</td><td><span style="font-family:var(--mono);font-weight:700">6</span></td><td><span style="font-family:var(--mono);font-weight:700">₹9,800</span></td><td><span class="bdg bdg-cancelled">Banned</span></td><td><div class="abtns"><button class="abtn v"><i class="fa-solid fa-eye"></i></button><button class="abtn e"><i class="fa-solid fa-pen"></i></button><button class="abtn d"><i class="fa-solid fa-ban"></i></button></div></td></tr>
+                    @if (!Model.Any())
+                    {
+                        <tr>
+                            <td colspan="9"
+                                class="text-center"
+                                style="padding:40px;color:var(--t3)">
+                                <i class="fa-solid fa-users"
+                                   style="font-size:32px;margin-bottom:8px"></i>
+                                <div>No users found</div>
+                            </td>
+                        </tr>
+                    }
+                    else
+                    {
+                        @foreach (var user in Model)
+                        {
+                            <tr>
+                                @* Checkbox *@
+                                <td><input type="checkbox" /></td>
+
+                                @* Customer Info *@
+                                <td>
+                                    <div class="cc">
+                                        <div class="cav"
+                                             style="@user.AvatarStyle">
+                                            @user.Initials
+                                        </div>
+                                        <div>
+                                            <div class="cn">@user.Name</div>
+                                            <div class="ce">@user.Email</div>
+                                        </div>
+                                    </div>
+                                </td>
+
+                                @* Phone *@
+                                <td style="font-size:12.5px">
+                                    @user.Phone
+                                </td>
+
+                                @* Location *@
+                                <td style="font-size:12.5px;color:var(--t3)">
+                                    @user.City
+                                </td>
+
+                                @* Joined Date *@
+                                <td style="font-size:12.5px;color:var(--t3)">
+                                    @user.FormattedDate
+                                </td>
+
+                                @* Orders *@
+                                <td>
+                                    <span style="font-family:var(--mono);
+                                        font-weight:700">
+                                        @user.TotalOrders
+                                    </span>
+                                </td>
+
+                                @* Spent *@
+                                <td>
+                                    <span style="font-family:var(--mono);
+                                        font-weight:700">
+                                        ₹@user.TotalSpent.ToString("N0")
+                                    </span>
+                                </td>
+
+                                @* Status *@
+                                <td>
+                                    <span class="bdg @user.StatusBadgeClass">
+                                        @user.StatusText
+                                    </span>
+                                </td>
+
+                                @* Actions *@
+                                <td>
+                                    <div class="abtns">
+
+                                        @* View *@
+                                        <button class="abtn v" title="View">
+                                            <i class="fa-solid fa-eye"></i>
+                                        </button>
+
+                                        @* Toggle Active/Inactive *@
+                                        <form asp-controller="Admin"
+                                              asp-action="ToggleUser"
+                                              method="post"
+                                              style="display:inline"
+                                              onsubmit="return confirm(
+                                            '@(user.IsActive ? "Deactivate" : "Activate") @user.Name?')">
+                                            @Html.AntiForgeryToken()
+                                            <input type="hidden"
+                                                   name="id"
+                                                   value="@user.UserId" />
+                                            <button type="submit"
+                                                    class="abtn @(user.IsActive ? "d" : "e")"
+                                                    title="@(user.IsActive ? "Deactivate" : "Activate")">
+                                                <i class="fa-solid @(user.IsActive ?
+                                                                                                              "fa-ban" : "fa-check")"></i>
+                                            </button>
+                                        </form>
+
+                                        @* Change Role Dropdown *@
+                                        <div class="dropdown d-inline">
+                                            <button class="abtn e dropdown-toggle"
+                                                    data-bs-toggle="dropdown"
+                                                    title="Change Role">
+                                                <i class="fa-solid fa-pen"></i>
+                                            </button>
+                                            <ul class="dropdown-menu dropdown-menu-end"
+                                                style="font-size:13px">
+                                                <li>
+                                                    <form asp-controller="Admin"
+                                                          asp-action="ChangeRole"
+                                                          method="post">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden"
+                                                               name="id"
+                                                               value="@user.UserId" />
+                                                        <input type="hidden"
+                                                               name="role"
+                                                               value="Admin" />
+                                                        <button type="submit"
+                                                                class="dropdown-item">
+                                                            <i class="fa-solid fa-shield-halved"></i>
+                                                            Make Admin
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                                <li>
+                                                    <form asp-controller="Admin"
+                                                          asp-action="ChangeRole"
+                                                          method="post">
+                                                        @Html.AntiForgeryToken()
+                                                        <input type="hidden"
+                                                               name="id"
+                                                               value="@user.UserId" />
+                                                        <input type="hidden"
+                                                               name="role"
+                                                               value="User" />
+                                                        <button type="submit"
+                                                                class="dropdown-item">
+                                                            <i class="fa-solid fa-user"></i>
+                                                            Make Customer
+                                                        </button>
+                                                    </form>
+                                                </li>
+                                            </ul>
+                                        </div>
+
+                                    </div>
+                                </td>
+                            </tr>
+                        }
+                    }
                 </tbody>
             </table>
         </div>
-        <div class="pgn"><div class="pgn-info">Showing 1–5 of 1,248 users</div><div class="pgn-btns"><button class="pb"><i class="fa-solid fa-chevron-left"></i></button><button class="pb on">1</button><button class="pb">2</button><button class="pb">3</button><button class="pb">…</button><button class="pb">250</button><button class="pb"><i class="fa-solid fa-chevron-right"></i></button></div></div>
+
+        @* Pagination Info *@
+        <div class="pgn">
+            <div class="pgn-info">
+                Showing @Model.Count of @ViewBag.TotalUsers users
+                (@ViewBag.ActiveUsers active,
+                @ViewBag.InactiveUsers inactive)
+            </div>
+        </div>
+
     </div>
 </div>
 
+@section Scripts {
+    <script>
+        function searchUsers() {
+            var input = document.getElementById('userSearch')
+                                .value.toLowerCase();
+            var rows  = document.querySelectorAll('#usersTable tbody tr');
+
+            rows.forEach(function (row) {
+                var text = row.innerText.toLowerCase();
+                row.style.display = text.includes(input) ? '' : 'none';
+            });
+        }
+    </script>
+}
