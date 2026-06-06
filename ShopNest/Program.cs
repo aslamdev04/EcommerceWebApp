@@ -26,6 +26,9 @@ namespace ShopNest
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<AuthService>();
+            builder.WebHost.UseSetting(
+           "detailedErrors", "true");
+            builder.WebHost.CaptureStartupErrors(true);
             //JWT Register
             // JWT Authentication
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
