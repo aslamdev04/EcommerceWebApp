@@ -16,6 +16,14 @@ namespace ShopNest
             var builder = WebApplication.CreateBuilder(args);
 
             // Add services to the container.
+        
+
+            // ← Yeh add karo — production port
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.ListenAnyIP(
+                    int.Parse(Environment.GetEnvironmentVariable("PORT") ?? "8080"));
+            });
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             // Generic → sab entities ke liye
@@ -26,9 +34,6 @@ namespace ShopNest
             builder.Services.AddScoped<IProductRepository, ProductRepository>();
             builder.Services.AddScoped<IUnitOfWork, UnitOfWork>();
             builder.Services.AddScoped<AuthService>();
-            builder.WebHost.UseSetting(
-           "detailedErrors", "true");
-            builder.WebHost.CaptureStartupErrors(true);
             //JWT Register
             // JWT Authentication
             builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
