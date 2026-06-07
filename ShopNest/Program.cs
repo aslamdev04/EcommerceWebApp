@@ -18,12 +18,7 @@ namespace ShopNest
             // Add services to the container.
         
 
-            // ← Yeh add karo — production port
-            builder.WebHost.ConfigureKestrel(options =>
-            {
-                options.ListenAnyIP(
-                    int.Parse(Environment.GetEnvironmentVariable("PORT") ?? "8080"));
-            });
+       
             builder.Services.AddControllersWithViews();
             builder.Services.AddDbContext<AppDbContext>(options => options.UseSqlServer(builder.Configuration.GetConnectionString("DefaultConnection")));
             // Generic → sab entities ke liye
@@ -62,6 +57,12 @@ namespace ShopNest
                         }
                     };
                 });
+            // ← Yeh add karo — production port
+            builder.WebHost.ConfigureKestrel(options =>
+            {
+                options.ListenAnyIP(
+                    int.Parse(Environment.GetEnvironmentVariable("PORT") ?? "8080"));
+            });
             var app = builder.Build();
 
 
