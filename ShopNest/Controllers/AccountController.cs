@@ -72,10 +72,12 @@ namespace ShopNest.Controllers
             // Token cookie mein store karo
             Response.Cookies.Append("AuthToken", token, new CookieOptions
             {
-                HttpOnly = true,     // JS se access nahi hoga
-                Secure = true,       // Sirf HTTPS pe
-                Expires = DateTime.UtcNow.AddDays(7)
+                HttpOnly = true,
+                Secure = false,    // ← HTTP ke liye false karo
+                SameSite = SameSiteMode.Lax,  // ← Yeh add karo
+                Expires = DateTime.UtcNow.AddHours(1)
             });
+
 
             // Role ke hisaab se redirect karo
             var role = _authService.GetRoleFromToken(token);
