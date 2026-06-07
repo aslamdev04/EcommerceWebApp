@@ -1,1 +1,32 @@
-﻿
+﻿name: Deploy to SmarterASP
+
+on:
+  push:
+    branches: [ main ]
+
+jobs:
+  deploy:
+    runs-on: windows-latest
+    
+    steps:
+    - uses: actions/checkout@v3
+    
+    - name: Setup .NET
+      uses: actions/setup-dotnet@v3
+      with:
+        dotnet-version: '8.0.x'
+        
+    - name: Restore
+      run: dotnet restore
+      
+    - name: Build and Publish
+      run: dotnet publish -c Release -o ./publish
+      
+    - name: Deploy via FTP
+      uses: SamKirkland/FTP-Deploy-Action@v4.3.4
+      with:
+        server: win9079.site4now.net
+        username: devaslam78-001
+        password: ${{ secrets.FTP_PASSWORD }}
+        local-dir: ./publish/
+        server-dir: /site1/wwwroot/
