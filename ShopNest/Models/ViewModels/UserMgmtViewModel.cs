@@ -18,10 +18,20 @@
             get
             {
                 if (string.IsNullOrEmpty(Name)) return "U";
-                var parts = Name.Split(' ');
-                if (parts.Length >= 2)
-                    return $"{parts[0][0]}{parts[1][0]}".ToUpper();
-                return Name.Substring(0, 1).ToUpper();
+
+                var parts = Name.Trim().Split(' ');
+
+                // ← Safe check
+                if (parts.Length >= 2 &&
+                    parts[1].Length > 0)
+                    return $"{parts[0][0]}{parts[1][0]}"
+                           .ToUpper();
+
+                // Sirf ek word hai
+                if (parts[0].Length >= 2)
+                    return parts[0].Substring(0, 2).ToUpper();
+
+                return parts[0].Substring(0, 1).ToUpper();
             }
         }
 
