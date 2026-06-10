@@ -47,21 +47,115 @@
             </div>
         </div>
         <nav class="sb-nav">
+
+            @* Overview *@
             <div class="sb-sec">
-                <div class="sb-sec-t">Overview</div><a asp-controller="Customer" asp-action="Index" class="sb-item on"><span class="si"><i class="fa-solid fa-gauge-high"></i></span>My Dashboard</a>
-            </div><div class="sb-sec">
-                <div class="sb-sec-t">Shopping</div><a asp-controller="Customer" asp-action="Browse" class="sb-item"><span class="si"><i class="fa-solid fa-shop"></i></span>Browse Products</a>
-                <a asp-controller="Customer" asp-action="Cart" class="sb-item"><span class="si"><i class="fa-solid fa-cart-shopping"></i></span>My Cart<span class="sb-bdg r">4</span></a>
-                <a asp-controller="Customer" asp-action="Checkout" class="sb-item"><span class="si"><i class="fa-solid fa-bag-shopping"></i></span>Checkout</a>
-                <a asp-controller="Customer" asp-action="Payment" class="sb-item"><span class="si"><i class="fa-solid fa-credit-card"></i></span>Payment</a>
-            </div><div class="sb-sec">
-                <div class="sb-sec-t">Orders</div><a asp-controller="Customer" asp-action="MyOrders" class="sb-item"><span class="si"><i class="fa-solid fa-box-archive"></i></span>My Orders</a>
-                <a asp-controller="Customer" asp-action="Order_track" class="sb-item"><span class="si"><i class="fa-solid fa-route"></i></span>Track Order</a>
-                <a asp-controller="Customer" asp-action="Reviews" class="sb-item"><span class="si"><i class="fa-solid fa-star"></i></span>Reviews & Feedback</a>
-            </div><div class="sb-sec">
-                <div class="sb-sec-t">Account</div><a asp-controller="Customer" asp-action="Profile" class="sb-item"><span class="si"><i class="fa-solid fa-user-circle"></i></span>My Profile</a>
-                <a asp-controller ="Customer" asp-action="Notifications" class="sb-item"><span class="si"><i class="fa-solid fa-bell"></i></span>Notifications<span class="sb-bdg a">5</span></a>
+                <div class="sb-sec-t">Overview</div>
+                <a asp-controller="Customer"
+                   asp-action="Index"
+                   class="sb-item on">
+                    <span class="si">
+                        <i class="fa-solid fa-gauge-high"></i>
+                    </span>
+                    My Dashboard
+                </a>
             </div>
+
+            @* Shopping *@
+            <div class="sb-sec">
+                <div class="sb-sec-t">Shopping</div>
+                <a asp-controller="Customer"
+                   asp-action="Browse"
+                   class="sb-item">
+                    <span class="si">
+                        <i class="fa-solid fa-shop"></i>
+                    </span>
+                    Browse Products
+                </a>
+
+                @* Cart — Real Count *@
+                <a asp-controller="Customer"
+                   asp-action="Cart"
+                   class="sb-item">
+                    <span class="si">
+                        <i class="fa-solid fa-cart-shopping"></i>
+                    </span>
+                    My Cart
+                    @if (ViewBag.CartCount != null && ViewBag.CartCount > 0)
+                    {
+                        <span class="sb-bdg r">@ViewBag.CartCount</span>
+                    }
+                </a>
+
+                <a asp-controller="Customer"
+                   asp-action="Checkout"
+                   class="sb-item">
+                    <span class="si">
+                        <i class="fa-solid fa-bag-shopping"></i>
+                    </span>
+                    Checkout
+                </a>
+            </div>
+
+            @* Orders *@
+            <div class="sb-sec">
+                <div class="sb-sec-t">Orders</div>
+                <a asp-controller="Customer"
+                   asp-action="MyOrders"
+                   class="sb-item">
+                    <span class="si">
+                        <i class="fa-solid fa-box-archive"></i>
+                    </span>
+                    My Orders
+                    @if (ViewBag.TotalOrders != null && ViewBag.TotalOrders > 0)
+                    {
+                        <span class="sb-bdg b">@ViewBag.TotalOrders</span>
+                    }
+                </a>
+                <a asp-controller="Customer"
+                   asp-action="Order_track"
+                   class="sb-item">
+                    <span class="si">
+                        <i class="fa-solid fa-route"></i>
+                    </span>
+                    Track Order
+                </a>
+                <a asp-controller="Customer"
+                   asp-action="Reviews"
+                   class="sb-item">
+                    <span class="si">
+                        <i class="fa-solid fa-star"></i>
+                    </span>
+                    Reviews & Feedback
+                </a>
+            </div>
+
+            @* Account *@
+            <div class="sb-sec">
+                <div class="sb-sec-t">Account</div>
+                <a asp-controller="Customer"
+                   asp-action="Profile"
+                   class="sb-item">
+                    <span class="si">
+                        <i class="fa-solid fa-user-circle"></i>
+                    </span>
+                    My Profile
+                </a>
+                <a asp-controller="Customer"
+                   asp-action="Notifications"
+                   class="sb-item">
+                    <span class="si">
+                        <i class="fa-solid fa-bell"></i>
+                    </span>
+                    Notifications
+                    @if (ViewBag.PendingOrders != null &&
+                         ViewBag.PendingOrders > 0)
+                    {
+                        <span class="sb-bdg a">@ViewBag.PendingOrders</span>
+                    }
+                </a>
+            </div>
+
         </nav>
 @* Sidebar footer — real user *@
 <div class="sb-foot">
@@ -104,12 +198,23 @@
                 <i class="fa-solid fa-bell"></i>
                 <span class="ndot"></span>
             </div>
-
-            <a asp-controller="Customer"
-               asp-action="Cart"
-               class="hdr-btn" style="text-decoration:none">
-                <i class="fa-solid fa-cart-shopping"></i>
-            </a>
+                @* Topbar mein Cart icon update karo *@
+                <a asp-controller="Customer"
+                   asp-action="Cart"
+                   class="hdr-btn"
+                   style="text-decoration:none;position:relative">
+                    <i class="fa-solid fa-cart-shopping"></i>
+                    @if (ViewBag.CartCount != null && ViewBag.CartCount > 0)
+                    {
+                        <span style="position:absolute;top:-5px;right:-5px;
+                            background:var(--rose);color:#fff;
+                            border-radius:50%;width:16px;height:16px;
+                            font-size:10px;display:flex;align-items:center;
+                            justify-content:center;font-weight:700">
+                            @ViewBag.CartCount
+                        </span>
+                    }
+                </a>
 
             <div class="hdr-btn">
                 <i class="fa-solid fa-gear"></i>

@@ -10,5 +10,7 @@
         public string ?Address { get; set; }
         public User ?User { get; set; }
         public List<OrderItem> ?OrderItems { get; set; }
+        public string? PaymentMethod { get; set; } 
+        public string? PaymentStatus { get; set; }
     }
 }

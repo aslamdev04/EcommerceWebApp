@@ -1,4 +1,4 @@
-﻿
+﻿@model ShopNest.Models.ViewModels.PaymentViewModel
 @{
     ViewData["Title"] = "Payment";
     Layout = "~/Views/Shared/_Customer.cshtml";
@@ -6,41 +6,298 @@
 
 <div class="cnt page-anim">
 
-    <div class="zpill cus"><i class="fa-solid fa-user-circle"></i> Customer Zone</div>
-    <div class="ph"><div><h1>Payment</h1><p>Choose your preferred payment method to complete your order.</p></div></div>
+    <div class="zpill cus">
+        <i class="fa-solid fa-user-circle"></i> Customer Zone
+    </div>
+
+    <div class="ph">
+        <div>
+            <h1>Payment</h1>
+            <p>Choose your preferred payment method.</p>
+        </div>
+    </div>
+
+    @* Messages *@
+    @if (TempData["Error"] != null)
+    {
+        <div class="alert alert-danger mb-3"
+             style="border-radius:10px;font-size:13px">
+            <i class="fa-solid fa-circle-exclamation"></i>
+            @TempData["Error"]
+        </div>
+    }
+
     <div class="g3r">
+
+        @* ── Left Side — Payment Methods ── *@
         <div class="card-sn">
-            <div class="ch"><h3><i class="fa-solid fa-credit-card"></i> Payment Methods</h3></div>
+            <div class="ch">
+                <h3>
+                    <i class="fa-solid fa-credit-card"></i>
+                    Payment Methods
+                </h3>
+            </div>
             <div class="cb d-flex flex-column gap-3">
-                <div style="border:2px solid var(--blue);border-radius:10px;padding:14px;background:var(--blue-l)">
+
+                @* UPI *@
+                <div style="border:2px solid var(--blue);
+                    border-radius:10px;padding:14px;
+                    background:var(--blue-l)">
                     <div class="d-flex align-items-center gap-2 mb-2">
                         <input type="radio" name="pay" checked />
-                        <div style="font-size:13.5px;font-weight:700">UPI Payment</div>
+                        <div style="font-size:13.5px;font-weight:700">
+                            UPI Payment
+                        </div>
                         <div class="ms-auto d-flex gap-1">
-                            <span style="font-size:10px;background:#fff;border:1px solid var(--bdr);padding:2px 6px;border-radius:4px;font-weight:700;color:var(--t2)">GPay</span>
-                            <span style="font-size:10px;background:#fff;border:1px solid var(--bdr);padding:2px 6px;border-radius:4px;font-weight:700;color:var(--t2)">PhonePe</span>
-                            <span style="font-size:10px;background:#fff;border:1px solid var(--bdr);padding:2px 6px;border-radius:4px;font-weight:700;color:var(--t2)">Paytm</span>
+                            <span style="font-size:10px;background:#fff;
+                                border:1px solid var(--bdr);
+                                padding:2px 6px;border-radius:4px;
+                                font-weight:700;color:var(--t2)">
+                                GPay
+                            </span>
+                            <span style="font-size:10px;background:#fff;
+                                border:1px solid var(--bdr);
+                                padding:2px 6px;border-radius:4px;
+                                font-weight:700;color:var(--t2)">
+                                PhonePe
+                            </span>
+                            <span style="font-size:10px;background:#fff;
+                                border:1px solid var(--bdr);
+                                padding:2px 6px;border-radius:4px;
+                                font-weight:700;color:var(--t2)">
+                                Paytm
+                            </span>
                         </div>
                     </div>
-                    <input type="text" class="finp" placeholder="Enter UPI ID (e.g. yourname@upi)" />
+                    <input type="text" class="finp"
+                           placeholder="Enter UPI ID (e.g. yourname@upi)" />
                 </div>
-                <div style="border:1.5px solid var(--bdr);border-radius:10px;padding:14px">
-                    <div class="d-flex align-items-center gap-2 mb-2"><input type="radio" name="pay" /><div style="font-size:13.5px;font-weight:700">Credit / Debit Card</div></div>
-                    <div class="fgrp"><label class="flbl">Card Number</label><input type="text" class="finp" placeholder="0000 0000 0000 0000" /></div>
-                    <div class="row g-2"><div class="col-6"><label class="flbl">Expiry</label><input type="text" class="finp" placeholder="MM / YY" /></div><div class="col-6"><label class="flbl">CVV</label><input type="text" class="finp" placeholder="•••" /></div></div>
+
+                @* Card *@
+                <div style="border:1.5px solid var(--bdr);
+                    border-radius:10px;padding:14px">
+                    <div class="d-flex align-items-center gap-2 mb-2">
+                        <input type="radio" name="pay" />
+                        <div style="font-size:13.5px;font-weight:700">
+                            Credit / Debit Card
+                        </div>
+                    </div>
+                    <div class="fgrp">
+                        <label class="flbl">Card Number</label>
+                        <input type="text" class="finp"
+                               placeholder="0000 0000 0000 0000" />
+                    </div>
+                    <div class="row g-2">
+                        <div class="col-6">
+                            <label class="flbl">Expiry</label>
+                            <input type="text" class="finp"
+                                   placeholder="MM / YY" />
+                        </div>
+                        <div class="col-6">
+                            <label class="flbl">CVV</label>
+                            <input type="text" class="finp"
+                                   placeholder="•••" />
+                        </div>
+                    </div>
                 </div>
-                <div style="border:1.5px solid var(--bdr);border-radius:10px;padding:14px"><div class="d-flex align-items-center gap-2"><input type="radio" name="pay" /><div style="font-size:13.5px;font-weight:700">Net Banking</div></div></div>
-                <div style="border:1.5px solid var(--bdr);border-radius:10px;padding:14px"><div class="d-flex align-items-center gap-2 justify-content-between"><div class="d-flex align-items-center gap-2"><input type="radio" name="pay" /><div style="font-size:13.5px;font-weight:700">Cash on Delivery</div></div><span class="bdg" style="background:#fef3c7;color:#92400e">+₹50 COD fee</span></div></div>
+
+                @* Net Banking *@
+                <div style="border:1.5px solid var(--bdr);
+                    border-radius:10px;padding:14px">
+                    <div class="d-flex align-items-center gap-2">
+                        <input type="radio" name="pay" />
+                        <div style="font-size:13.5px;font-weight:700">
+                            Net Banking
+                        </div>
+                    </div>
+                </div>
+
+                @* COD *@
+                @* COD Section update karo *@
+                <div style="border:1.5px solid var(--bdr);
+                    border-radius:10px;padding:14px"
+                     id="cod-section">
+                    <div class="d-flex align-items-center gap-2
+                        justify-content-between">
+                        <div class="d-flex align-items-center gap-2">
+                            <input type="radio"
+                                   name="pay"
+                                   id="cod-radio"
+                                   onclick="togglePayBtn()" />
+                            <div style="font-size:13.5px;font-weight:700">
+                                Cash on Delivery
+                            </div>
+                        </div>
+                        <span class="bdg"
+                              style="background:#fef3c7;color:#92400e">
+                            +₹50 COD fee
+                        </span>
+                    </div>
+
+                    @* COD Info *@
+                    <div id="cod-info"
+                         style="display:none;margin-top:10px;
+                        font-size:12.5px;color:var(--t3)">
+                        <i class="fa-solid fa-info-circle"></i>
+                        Pay ₹@Model.TotalWithCOD.ToString("N0")
+                        (including ₹50 COD fee) at delivery
+                    </div>
+                </div>
+
+                @* COD Submit Form *@
+                <form asp-controller="Customer"
+                      asp-action="CODPayment"
+                      method="post"
+                      id="cod-form">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden"
+                           name="orderId"
+                           value="@Model.OrderId" />
+                </form>
+
+                @* Pay Button — Dynamic *@
+                <button id="rzp-button"
+                        class="btn-sn btn-p w-100 justify-content-center mt-3"
+                        style="padding:13px;font-size:14px">
+                    <i class="fa-solid fa-lock"></i>
+                    Pay ₹@Model.Amount.ToString("N0") Securely
+                </button>
+
             </div>
         </div>
+
+        @* ── Right Side — Summary ── *@
         <div class="card-sn">
-            <div class="ch"><h3><i class="fa-solid fa-lock"></i> Secure Payment</h3></div>
+            <div class="ch">
+                <h3><i class="fa-solid fa-lock"></i> Secure Payment</h3>
+            </div>
             <div class="cb">
-                <div class="order-sum"><div class="os-row"><span>Amount to Pay</span><span style="font-size:18px;font-weight:800;color:var(--blue)">₹1,70,587</span></div></div>
-                <div class="d-flex align-items-center gap-2 my-3 p-3" style="background:#d1fae5;border-radius:8px"><i class="fa-solid fa-shield-halved" style="color:var(--emerald)"></i><div style="font-size:12px;color:#064e3b">256-bit SSL encrypted. Your payment information is 100% secure.</div></div>
-                <button class="btn-sn btn-p w-100 justify-content-center" style="padding:13px;font-size:14px"><i class="fa-solid fa-lock"></i> Pay ₹1,70,587 Securely</button>
+
+                <div class="order-sum">
+                    <div class="os-row">
+                        <span>Order</span>
+                        <span>#ORD-@Model.OrderId.ToString("D4")</span>
+                    </div>
+                    <div class="os-row">
+                        <span>Amount to Pay</span>
+                        <span style="font-size:18px;font-weight:800;
+                            color:var(--blue)">
+                            ₹@Model.Amount.ToString("N0")
+                        </span>
+                    </div>
+                </div>
+
+                <div class="d-flex align-items-center gap-2 my-3 p-3"
+                     style="background:#d1fae5;border-radius:8px">
+                    <i class="fa-solid fa-shield-halved"
+                       style="color:var(--emerald)"></i>
+                    <div style="font-size:12px;color:#064e3b">
+                        256-bit SSL encrypted. 100% secure.
+                    </div>
+                </div>
+
+                @* Razorpay Pay Button *@
+                <button id="rzp-button"
+                        class="btn-sn btn-p w-100 justify-content-center"
+                        style="padding:13px;font-size:14px">
+                    <i class="fa-solid fa-lock"></i>
+                    Pay ₹@Model.Amount.ToString("N0") Securely
+                </button>
+
+                @* Hidden Verify Form *@
+                <form id="payment-form"
+                      asp-controller="Customer"
+                      asp-action="VerifyPayment"
+                      method="post">
+                    @Html.AntiForgeryToken()
+                    <input type="hidden"
+                           name="razorpay_order_id"
+                           id="razorpay_order_id" />
+                    <input type="hidden"
+                           name="razorpay_payment_id"
+                           id="razorpay_payment_id" />
+                    <input type="hidden"
+                           name="razorpay_signature"
+                           id="razorpay_signature" />
+                    <input type="hidden"
+                           name="orderId"
+                           value="@Model.OrderId" />
+                </form>
+
             </div>
         </div>
+
     </div>
 </div>
 
+@section Scripts {
+    <script src="https://checkout.razorpay.com/v1/checkout.js"></script>
+    <script>
+        // COD radio select hone pe button change karo
+        function togglePayBtn() {
+        var isCOD = document.getElementById('cod-radio').checked;
+        var btn   = document.getElementById('rzp-button');
+        var info  = document.getElementById('cod-info');
+
+        if (isCOD) {
+        // COD mode
+        btn.innerHTML = '<i class="fa-solid fa-motorcycle"></i> Place COD Order (₹@Model.TotalWithCOD.ToString("N0"))';
+        info.style.display = 'block';
+
+        // Button click → COD form submit
+        btn.onclick = function() {
+        document.getElementById('cod-form').submit();
+        }
+        } else {
+        // Online payment mode
+        btn.innerHTML = '<i class="fa-solid fa-lock"></i> Pay ₹@Model.Amount.ToString("N0") Securely';
+        info.style.display = 'none';
+
+        // Button click → Razorpay open
+        btn.onclick = function(e) {
+        var rzp = new Razorpay(options);
+        rzp.open();
+        e.preventDefault();
+        }
+        }
+        }
+
+        // Razorpay Options
+        var options = {
+        key         : "@Model.KeyId",
+        amount      : "@((int)(Model.Amount * 100))",
+        currency    : "INR",
+        name        : "ShopNest",
+        description : "Order #ORD-@Model.OrderId.ToString("D4")",
+        order_id    : "@Model.RazorpayOrderId",
+        prefill: {
+        name  : "@Model.UserName",
+        email : "@Model.UserEmail"
+        },
+        theme: { color: "#2563eb" },
+        handler: function (response) {
+        document.getElementById('razorpay_order_id')
+        .value = response.razorpay_order_id;
+        document.getElementById('razorpay_payment_id')
+        .value = response.razorpay_payment_id;
+        document.getElementById('razorpay_signature')
+        .value = response.razorpay_signature;
+        document.getElementById('payment-form').submit();
+        }
+        };
+
+        // Default — Online payment
+        document.getElementById('rzp-button')
+        .onclick = function(e) {
+        var rzp = new Razorpay(options);
+        rzp.open();
+        e.preventDefault();
+        }
+
+        // Radio buttons pe listener
+        document.querySelectorAll('input[name="pay"]')
+        .forEach(function(radio) {
+        radio.addEventListener('change', togglePayBtn);
+        });
+    </script>
+}

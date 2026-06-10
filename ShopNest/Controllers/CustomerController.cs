@@ -1,22 +1,25 @@
 ﻿using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Identity;
 using Microsoft.AspNetCore.Mvc;
+using Razorpay.Api;
 using ShopNest.Models;
 using ShopNest.Models.ViewModels;
 using ShopNest.Repositories.Interfaces;
 using System.Security.Claims;
+using static Org.BouncyCastle.Math.EC.ECCurve;
 
 namespace ShopNest.Controllers
 {
     [Authorize(Roles = "User")]
  
-    public class CustomerController : Controller
+    public class CustomerController : BaseController
     {
         private readonly IUnitOfWork _uow;
-
-        public CustomerController(IUnitOfWork uow)
+        private readonly IConfiguration _config;
+        public CustomerController(IUnitOfWork uow,IConfiguration config) :base(uow)
         {
             _uow = uow;
+            _config = config;
         }
 
         public async Task<IActionResult> Index()
@@ -287,10 +290,12 @@ namespace ShopNest.Controllers
             }
 
             // Order banao
-            var order = new Order
+            var order = new Models.Order
             {
                 UserId = userId,
                 OrderDate = DateTime.UtcNow,
+                PaymentMethod = "Online",  // ← Yeh add karo
+                PaymentStatus = "Pending", // ← Yeh add karo
                 Status = "Pending",
                 Address = $"{model.Address}, {model.City} - {model.Pincode}",
                 TotalAmount = userCart.Sum(c => {
@@ -326,7 +331,8 @@ namespace ShopNest.Controllers
 
             TempData["OrderId"] = order.OrderId;
             TempData["Success"] = $"🎉 Order #ORD-{order.OrderId:D4} placed successfully!";
-            return RedirectToAction("OrderSuccess");
+            return RedirectToAction("Payment",
+       new { orderId = order.OrderId }); // ← OrderSuccess ki jagah Payment
         }
 
         // Order Success Page
@@ -532,11 +538,113 @@ namespace ShopNest.Controllers
             return View();
            
         }
-        public IActionResult Payment()
+        #region Payment Integration
+        // GET — Payment Page
+        [HttpGet]
+        public async Task<IActionResult> Payment(int orderId)
         {
-            return View();
-           
+            var userIdClaim = User.FindFirst(ClaimTypes.NameIdentifier)?.Value;
+            if (userIdClaim == null) return RedirectToAction("Login", "Account");
+            int userId = int.Parse(userIdClaim);
+
+            // Order fetch karo
+            var order = await _uow.Orders.GetByIdAsync(orderId);
+            if (order == null) return NotFound();
+
+            var user = await _uow.Users.GetByIdAsync(userId);
+
+            // Razorpay Order banao
+            var client = new RazorpayClient(
+                _config["Razorpay:KeyId"],
+                _config["Razorpay:KeySecret"]);
+
+            var options = new Dictionary<string, object>
+    {
+        { "amount",   (int)(order.TotalAmount * 100) }, // Paise mein
+        { "currency", "INR" },
+        { "receipt",  $"order_{orderId}" }
+    };
+
+            var razorpayOrder = client.Order.Create(options);
+            string razorpayOrderId = razorpayOrder["id"].ToString();
+
+            var viewModel = new PaymentViewModel
+            {
+                OrderId = orderId,
+                Amount = order.TotalAmount,
+                RazorpayOrderId = razorpayOrderId,
+                KeyId = _config["Razorpay:KeyId"],
+                UserName = user?.Name ?? "",
+                UserEmail = user?.Email ?? ""
+            };
+
+            return View(viewModel);
         }
-  
+
+        // POST — Payment Verify
+        [HttpPost]
+        public async Task<IActionResult> VerifyPayment(
+            string razorpay_order_id,
+            string razorpay_payment_id,
+            string razorpay_signature,
+            int orderId)
+        {
+            try
+            {
+                // Signature verify karo
+                var attributes = new Dictionary<string, string>
+        {
+            { "razorpay_order_id",   razorpay_order_id },
+            { "razorpay_payment_id", razorpay_payment_id },
+            { "razorpay_signature",  razorpay_signature }
+        };
+
+                Utils.verifyPaymentSignature(attributes);
+
+                // Order status update karo
+                var order = await _uow.Orders.GetByIdAsync(orderId);
+                if (order != null)
+                {
+                    order.Status = "Processing";
+                    await _uow.Orders.UpdateAsync(order);
+                    await _uow.SaveAsync();
+                }
+
+                TempData["Success"] = $"🎉 Payment Successful! Order #ORD-{orderId:D4} confirmed!";
+                TempData["OrderId"] = orderId;
+                return RedirectToAction("OrderSuccess");
+            }
+            catch (Exception)
+            {
+                TempData["Error"] = "❌ Payment verification failed!";
+                return RedirectToAction("Payment", new { orderId });
+            }
+        }
+
+        #endregion
+        #region Cash On 
+        // POST — COD Payment
+        [HttpPost]
+        public async Task<IActionResult> CODPayment(int orderId)
+        {
+            var order = await _uow.Orders.GetByIdAsync(orderId);
+            if (order == null) return NotFound();
+
+            // COD fee add karo
+            order.TotalAmount += 50m;
+            order.Status = "Pending";
+            order.PaymentMethod = "COD";
+            order.PaymentStatus = "Pending";
+
+            await _uow.Orders.UpdateAsync(order);
+            await _uow.SaveAsync();
+
+            TempData["Success"] = $"🎉 Order #ORD-{orderId:D4} placed with Cash on Delivery!";
+            TempData["OrderId"] = orderId;
+            return RedirectToAction("OrderSuccess");
+        }
+        #endregion
+
+
     }
 }
