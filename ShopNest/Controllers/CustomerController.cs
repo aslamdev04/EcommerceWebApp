@@ -295,7 +295,7 @@ namespace ShopNest.Controllers
                 UserId = userId,
                 OrderDate = DateTime.UtcNow,
                 PaymentMethod = "Online",  // ← Yeh add karo
-                PaymentStatus = "Pending", // ← Yeh add karo
+                PaymentStatus = "Pending", // ← Yeh add karogit 
                 Status = "Pending",
                 Address = $"{model.Address}, {model.City} - {model.Pincode}",
                 TotalAmount = userCart.Sum(c => {
